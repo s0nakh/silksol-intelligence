@@ -48,3 +48,6 @@ dist-ssr
 # Netlify CLI link state
 .netlify/
 
+
+# Raw downloaded datasets (re-create with scripts/data/fetch-caspian.mjs)
+/data/raw/

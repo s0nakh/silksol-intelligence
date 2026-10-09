@@ -15,6 +15,8 @@ export function reasonText(i18n: I18n, r: BottleneckReason) {
       return t("reasons.storm_closure", { wind: num(r.windMs, 1), threshold: r.thresholdMs });
     case "storm_forecast":
       return t("reasons.storm_forecast", { h: r.inH, wind: num(r.windMs, 1) });
+    case "closure_outlook":
+      return t("reasons.closure_outlook", { day: r.day, p: r.probability });
     case "queue_backlog":
       return t("reasons.queue_backlog", { n: r.anchored, h: num(r.avgQueueH, 0) });
     case "seasonal_peak":

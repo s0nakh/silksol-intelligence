@@ -22,21 +22,35 @@ import {
   rng,
   round,
 } from "@/services/telemetry/prng";
+import { CLOSURE_CALIBRATION, closureOutlook, type ClosureOutlookDay } from "./closureModel";
 
 // Isolated inference service for corridor delay risk. Two models share one feature pipeline:
 //  1. Node disruption classifier (logistic) → "delay probability" of a node at a given hour.
 //  2. Dwell survival model (Weibull proportional hazards, time-varying covariates) sampled by
 //     Monte Carlo → probabilistic ETA, ETA drift and the shipment's Predictive Risk Index.
 // Coefficients are an expert-set BASELINE until the CatBoost / survival models are trained on
-// historical dwell data — see MODEL_CARD. Every output can be traced to its features.
+// historical dwell data — see MODEL_CARD.
+//  3. Port-closure model (closureModel.ts) — CALIBRATED on real forecasts vs. station observations
+//     at Aktau and Baku and backtested out of time (docs/BACKTEST.md). Every output can be traced to its features.
 
 export const MODEL_CARD = {
   name: "SilkSol Corridor Risk Engine",
-  version: "0.1.0-baseline",
-  status: "baseline" as const,
-  trainedOn: null,
+  version: "0.2.0",
+  status: "partially_calibrated" as const,
+  trainedOn: {
+    closureModel: `Archived forecasts ${CLOSURE_CALIBRATION.train.start} … ${CLOSURE_CALIBRATION.train.end} vs. Meteostat station observations (Aktau UATE0, Baku 37864)`,
+    seasonality: `Observed closure-day frequency by month, ${CLOSURE_CALIBRATION.climatology.years.start}–${CLOSURE_CALIBRATION.climatology.years.end}`,
+    dwellModel: null,
+  },
+  backtest: CLOSURE_CALIBRATION.backtest.map((b) => ({
+    leadDays: b.leadDays,
+    days: b.days,
+    events: b.events,
+    auc: b.auc,
+    brierSkill: b.brierSkill,
+  })),
   notes:
-    "Expert-set coefficients over synthetic seasonal baselines. Not calibrated on historical data; replace with CatBoost (classifier) and a survival model trained on dwell logs before commercial use.",
+    "Port-closure probabilities and sea-port seasonality are fitted on real data and backtested out of time (docs/BACKTEST.md). Dwell (Weibull PH) and disruption coefficients are still expert-set; they are calibrated on a pilot partner's dwell logs before commercial use.",
   features: [
     "weatherSeverity",
     "queueDensity",
@@ -338,6 +352,7 @@ export function forecastShipment(
 export type BottleneckReason =
   | { code: "storm_closure"; windMs: number; thresholdMs: number }
   | { code: "storm_forecast"; inH: number; windMs: number }
+  | { code: "closure_outlook"; day: string; probability: number }
   | { code: "queue_backlog"; anchored: number; avgQueueH: number }
   | { code: "seasonal_peak"; index: number }
   | { code: "rail_load"; loadPct: number };
@@ -378,6 +393,13 @@ export function detectBottlenecks(ctx: EngineContext): Bottleneck[] {
             windMs: storm.windMs,
           });
       }
+      const outlook = closureOutlook(pw, ctx.now).find((d) => d.warning);
+      if (outlook)
+        reasons.push({
+          code: "closure_outlook",
+          day: outlook.day,
+          probability: outlook.probability,
+        });
       const q = ctx.snap.ais.queues[node];
       if (f.queueDensity >= 0.4)
         reasons.push({ code: "queue_backlog", anchored: q.anchored, avgQueueH: q.avgQueueH });
@@ -404,6 +426,8 @@ export type CorridorForecast = {
   bottlenecks: Bottleneck[];
   /** Container-weighted mean Predictive Risk Index, 0–100. */
   corridorRisk: number;
+  /** Calibrated closure probability for each Caspian port, next 3 UTC days. */
+  closureOutlook: Record<CaspianPort, ClosureOutlookDay[]>;
   model: typeof MODEL_CARD;
 };
 
@@ -421,6 +445,9 @@ export function forecastCorridor(
     shipments,
     bottlenecks: detectBottlenecks(ctx),
     corridorRisk: total ? round(weighted / total) : 0,
+    closureOutlook: Object.fromEntries(
+      CASPIAN_PORTS.map((p) => [p, closureOutlook(snap.weather[p], ctx.now)]),
+    ) as Record<CaspianPort, ClosureOutlookDay[]>,
     model: MODEL_CARD,
   };
 }

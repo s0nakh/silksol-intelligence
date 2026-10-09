@@ -1,5 +1,7 @@
 import "./lib/error-capture";
 
+import { createApi, type ApiEnv } from "./api/router";
+import { dashboardAuthResponse } from "./api/dashboardAuth";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
@@ -44,8 +46,29 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+// Node (Docker / QazCloud) reads process.env; Cloudflare passes bindings as `env`.
+function serverEnv(bindings: unknown): ApiEnv {
+  const proc = (globalThis as { process?: { env?: ApiEnv } }).process?.env ?? {};
+  const extra =
+    bindings && typeof bindings === "object"
+      ? Object.fromEntries(
+          Object.entries(bindings).filter((e): e is [string, string] => typeof e[1] === "string"),
+        )
+      : {};
+  return { ...proc, ...extra };
+}
+
+let api: ((request: Request) => Promise<Response>) | undefined;
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    const vars = serverEnv(env);
+    if (new URL(request.url).pathname.startsWith("/api/")) {
+      api ??= createApi({ env: vars });
+      return api(request);
+    }
+    const denied = dashboardAuthResponse(request, vars);
+    if (denied) return denied;
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

@@ -2,6 +2,7 @@ import {
   chainHead,
   verifyChain,
   type LedgerEntry,
+  type NewLedgerEvent,
   type Provenance,
 } from "@/services/ledger/auditLedger";
 import { canonicalJson, sha256Hex } from "@/services/ledger/sha256";
@@ -115,6 +116,23 @@ export function primaryCause(attribution: DelayAttribution[]): DelayCause | null
 
 export const hashReportBody = (body: DelayReportBody) => sha256Hex(canonicalJson(body));
 
+/** Ledger event that anchors an issued report's hash in the cargo's audit chain. */
+export const reportIssuedEvent = (report: DelayReport): NewLedgerEvent => ({
+  type: "REPORT_ISSUED",
+  occurredAt: report.issuedAt,
+  node: report.cargo.currentNode,
+  payload: {
+    reportId: report.reportId,
+    reportHash: report.reportHash,
+    ledgerHead: report.ledger.head,
+  },
+  provenance: {
+    source: "SilkSol Intelligence report service",
+    mode: "simulated",
+    retrievedAt: report.issuedAt,
+  },
+});
+
 export function buildDelayReport(args: {
   snap: CorridorSnapshot;
   shipment: Shipment;
@@ -199,7 +217,7 @@ export function buildDelayReport(args: {
       ...weather.map((w) => snap.weather[w.port as keyof CorridorSnapshot["weather"]].provenance),
     ]),
     disclaimer:
-      "Decision-support analytics, not an insurance or legal determination. Simulated feeds are labelled in `sources`; the risk model is an uncalibrated baseline.",
+      "Decision-support analytics, not an insurance or legal determination. Simulated feeds are labelled in `sources`; port-closure probabilities are calibrated on weather-station data, dwell and ETA coefficients are an expert-set baseline.",
   };
   return { ...body, reportHash: hashReportBody(body) };
 }

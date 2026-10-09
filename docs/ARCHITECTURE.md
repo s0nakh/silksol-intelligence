@@ -1,6 +1,6 @@
 # 🏗 Architecture
 
-SilkSol Intelligence is a client-rendered analytics dashboard over an isomorphic service layer. Every service is plain TypeScript with no framework or network dependency, so the same code runs during SSR, in the browser and in unit tests — and can move behind an API later unchanged.
+SilkSol Intelligence is a client-rendered analytics dashboard over an isomorphic service layer. Every service is plain TypeScript with no framework or network dependency, so the same code runs during SSR, in the browser, in unit tests and behind the REST API (`src/api`, mounted at `/api/v1` by `src/server.ts` — see [API.md](./API.md)).
 
 ```text
 src/
@@ -40,7 +40,7 @@ Mock mode is deterministic (seeded PRNG) and replays a scripted scenario from a 
 - **ETA drift** (median lateness) and the P10–P90 ETA band
 - P(current-node dwell exceeds its SLA)
 
-`MODEL_CARD.status = "baseline"`: coefficients are expert-set over synthetic seasonal baselines. Production path: train a CatBoost classifier and a survival model (e.g. Weibull AFT / random survival forest) on historical dwell logs, then swap the coefficients behind the same interface.
+`MODEL_CARD.status = "partially_calibrated"`: the port-closure model (`closureModel.ts`) and sea-port seasonality are fitted on real station observations and archived forecasts and backtested out of time ([BACKTEST.md](./BACKTEST.md)); disruption and dwell coefficients are still expert-set. Production path: train a CatBoost classifier and a survival model (e.g. Weibull AFT / random survival forest) on historical dwell logs, then swap the coefficients behind the same interface.
 
 ## 3. SLA monitor
 

@@ -159,6 +159,9 @@
     "calm": "Calm",
     "note": "Ferry and ro-ro operations stop above {n} m/s sustained wind.",
     "button": "Bottlenecks",
+    "outlook": "Port-closure probability",
+    "outlookNote": "Calibrated on real forecasts vs. weather-station observations · backtest AUC {auc} at 1–3 days ahead",
+    "outlookDay": "D+{n}",
     "dialogTitle": "Corridor bottlenecks · next {h} h",
     "dialogDescription": "Delay probability per node from weather, roadstead queues, rail load and seasonality.",
     "now": "now {risk}%",
@@ -167,6 +170,7 @@
   "reasons": {
     "storm_closure": "Storm closure: wind {wind} m/s > {threshold} m/s",
     "storm_forecast": "Storm front in ~{h} h (wind {wind} m/s)",
+    "closure_outlook": "Closure risk {p}% on {day} (model calibrated on weather-station data)",
     "queue_backlog": "{n} vessels on roadstead, avg wait {h} h",
     "seasonal_peak": "Seasonal peak: dwell index ×{index}",
     "rail_load": "Rail network load {pct}%"

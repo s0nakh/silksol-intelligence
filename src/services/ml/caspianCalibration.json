@@ -1,0 +1,148 @@
+{
+  "schema": "silksol.closure-calibration/v1",
+  "generatedAt": "2026-10-09",
+  "event": "UTC day with station-observed sustained wind ≥ 15 m/s (closure proxy)",
+  "features": ["forecastMaxWindMs", "forecastMaxGustMs"],
+  "coefficients": {
+    "intercept": -9.0444,
+    "maxWind": 0.6246,
+    "maxGust": 0.088
+  },
+  "warningThreshold": 0.43,
+  "trainBaseRate": 0.083,
+  "train": {
+    "start": "2022-01-01",
+    "end": "2024-02-29",
+    "days": 1580,
+    "events": 131
+  },
+  "test": {
+    "start": "2024-03-01",
+    "end": "2025-12-31"
+  },
+  "backtest": [
+    {
+      "leadDays": 1,
+      "days": 1304,
+      "events": 53,
+      "auc": 0.879,
+      "brier": 0.034,
+      "brierSkill": 0.158,
+      "model": {
+        "hits": 19,
+        "misses": 34,
+        "falseAlarms": 25,
+        "pod": 0.3584905660377358,
+        "far": 0.5681818181818182,
+        "csi": 0.24358974358974358
+      },
+      "baselineRule": {
+        "hits": 1,
+        "misses": 52,
+        "falseAlarms": 1,
+        "pod": 0.018867924528301886,
+        "far": 0.5,
+        "csi": 0.018518518518518517
+      },
+      "perPort": {
+        "aktau": {
+          "days": 667,
+          "events": 26,
+          "auc": 0.862
+        },
+        "baku": {
+          "days": 637,
+          "events": 27,
+          "auc": 0.905
+        }
+      }
+    },
+    {
+      "leadDays": 2,
+      "days": 1304,
+      "events": 53,
+      "auc": 0.888,
+      "brier": 0.037,
+      "brierSkill": 0.105,
+      "model": {
+        "hits": 17,
+        "misses": 36,
+        "falseAlarms": 31,
+        "pod": 0.32075471698113206,
+        "far": 0.6458333333333334,
+        "csi": 0.20238095238095238
+      },
+      "baselineRule": {
+        "hits": 1,
+        "misses": 52,
+        "falseAlarms": 1,
+        "pod": 0.018867924528301886,
+        "far": 0.5,
+        "csi": 0.018518518518518517
+      },
+      "perPort": {
+        "aktau": {
+          "days": 667,
+          "events": 26,
+          "auc": 0.882
+        },
+        "baku": {
+          "days": 637,
+          "events": 27,
+          "auc": 0.904
+        }
+      }
+    },
+    {
+      "leadDays": 3,
+      "days": 1304,
+      "events": 53,
+      "auc": 0.891,
+      "brier": 0.038,
+      "brierSkill": 0.078,
+      "model": {
+        "hits": 12,
+        "misses": 41,
+        "falseAlarms": 31,
+        "pod": 0.22641509433962265,
+        "far": 0.7209302325581395,
+        "csi": 0.14285714285714285
+      },
+      "baselineRule": {
+        "hits": 0,
+        "misses": 53,
+        "falseAlarms": 1,
+        "pod": 0,
+        "far": 1,
+        "csi": 0
+      },
+      "perPort": {
+        "aktau": {
+          "days": 667,
+          "events": 26,
+          "auc": 0.886
+        },
+        "baku": {
+          "days": 637,
+          "events": 27,
+          "auc": 0.905
+        }
+      }
+    }
+  ],
+  "climatology": {
+    "years": {
+      "start": 2010,
+      "end": 2025
+    },
+    "closureDayShareByMonth": {
+      "aktau": [0.046, 0.069, 0.095, 0.071, 0.024, 0.017, 0.012, 0.008, 0.019, 0.042, 0.069, 0.087],
+      "baku": [0.081, 0.1, 0.113, 0.108, 0.052, 0.063, 0.077, 0.034, 0.058, 0.058, 0.067, 0.043],
+      "kuryk": [0.046, 0.069, 0.095, 0.071, 0.024, 0.017, 0.012, 0.008, 0.019, 0.042, 0.069, 0.087]
+    }
+  },
+  "sources": {
+    "groundTruth": "Meteostat hourly observations (CC BY-NC 4.0): UATE0 Aktau, 37864 Baku Bina",
+    "forecasts": "Open-Meteo Historical Forecast API and Previous Runs API (non-commercial tier)"
+  }
+}

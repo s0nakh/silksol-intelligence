@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useI18n } from "@/i18n";
+import type { ClosureOutlookDay } from "@/services/ml/closureModel";
 import { MODEL_CARD, type Bottleneck } from "@/services/ml/riskEngine";
 import { PORT_CLOSURE_WIND_MS, type PortWeather } from "@/services/telemetry";
 import { DemoTag } from "./DemoTag";
@@ -23,9 +24,11 @@ const LEVEL_CLASS: Record<Bottleneck["level"], string> = {
 /** Caspian port weather for the selected cargo, plus the corridor bottleneck list. */
 export function WeatherPanel({
   weather,
+  outlook,
   bottlenecks,
 }: {
   weather: PortWeather;
+  outlook: ClosureOutlookDay[];
   bottlenecks: Bottleneck[];
 }) {
   const i18n = useI18n();
@@ -69,6 +72,26 @@ export function WeatherPanel({
           alert={w.portClosed}
         />
       </div>
+      {outlook.length > 0 && (
+        <div className="border-t border-border px-5 py-3" data-testid="closure-outlook">
+          <p className="text-[10px] font-semibold text-muted-foreground">{t("weather.outlook")}</p>
+          <div className="mt-1.5 grid grid-cols-3 gap-2">
+            {outlook.map((d) => (
+              <div key={d.day} className="rounded-md border border-border bg-card/60 px-2 py-1.5">
+                <p className="text-[10px] text-muted-foreground">
+                  {t("weather.outlookDay", { n: d.leadDays })}
+                </p>
+                <p className={`text-sm font-semibold ${d.warning ? "text-warning" : ""}`}>
+                  {d.probability}%
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-1.5 text-[10px] leading-4 text-muted-foreground">
+            {t("weather.outlookNote", { auc: num(MODEL_CARD.backtest[0]?.auc ?? 0, 2) })}
+          </p>
+        </div>
+      )}
       <div className="flex items-center gap-2 border-t border-border px-5 py-3">
         <p className="text-[10px] leading-4 text-muted-foreground">
           {w.stormAlert ? (

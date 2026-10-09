@@ -88,10 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
       },
-      // ?v=2 busts the browser cache of the old default favicon.
-      { rel: "icon", href: "/favicon.ico?v=2", sizes: "any" },
-      { rel: "icon", href: "/icon-512.png?v=2", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png?v=2" },
+      // ?v=3 busts the browser cache of the previous icon set.
+      { rel: "icon", href: "/favicon.ico?v=3", sizes: "any" },
+      { rel: "icon", href: "/icon-512.png?v=3", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png?v=3" },
     ],
   }),
   shellComponent: RootShell,

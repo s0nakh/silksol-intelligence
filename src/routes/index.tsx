@@ -568,7 +568,11 @@ function Dashboard() {
               </div>
             </div>
 
-            <WeatherPanel weather={snapshot.weather[port]} bottlenecks={forecast.bottlenecks} />
+            <WeatherPanel
+              weather={snapshot.weather[port]}
+              outlook={forecast.closureOutlook[port]}
+              bottlenecks={forecast.bottlenecks}
+            />
 
             <div className="panel">
               <PanelHeader

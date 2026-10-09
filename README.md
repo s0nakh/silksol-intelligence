@@ -1,6 +1,6 @@
-<p align="center"><img src="./Solana%20Colloseum/SilkSol%20AI%20Logo.jpg" alt="SilkSol Intelligence logo" width="180"/></p>
+<p align="center"><img src="./assets/logo.svg" alt="SilkSol Intelligence" width="420"/></p>
 
-<h1 align="center">🚢 SilkSol Intelligence ⚓️</h1>
+<h1 align="center">SilkSol Intelligence</h1>
 
 <p align="center">
   <em>B2B Corridor Risk Intelligence for Middle Corridor (TITR / ТМТМ) logistics — predictive delay risk, SLA monitoring and verifiable Proof of Delay</em>
@@ -14,7 +14,7 @@
 
 ## 💡 Executive Summary
 
-Forwarders, cargo owners and insurers on the Trans-Caspian route constantly argue about *why* a container is late: the forwarder blames the port, the port blames the weather, the weather blames customs. SilkSol Intelligence is an independent **single source of truth**:
+Forwarders, cargo owners and insurers on the Trans-Caspian route constantly argue about _why_ a container is late: the forwarder blames the port, the port blames the weather, the weather blames customs. SilkSol Intelligence is an independent **single source of truth**:
 
 1. **Predictive Risk Index** — an ML engine forecasts the probability that a shipment arrives later than its contractual ETA, with a probabilistic ETA (P10–P90) 3–7 days ahead.
 2. **SLA Violation Monitor** — tracks port, roadstead and rail dwell time at every checkpoint against the thresholds agreed in the contract, and predicts upcoming breaches.
@@ -64,19 +64,36 @@ Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 - **Passport of Delay** — delay attribution (storm closure / port queue / rail border / terminal handling), evidence tables, sources with provenance, integrity check and JSON export; issuing it anchors the report hash in the cargo's chain.
 - **Three languages** — English, Russian, Kazakh with an EN | RU | KK switcher in the header (choice remembered per browser).
 
-### Honesty labels (ProofPilot rules)
+### Honesty labels
 
-Every number carries its provenance: `SIMULATED` / `LIVE` tags in the UI and a `provenance` record (`source`, `mode`, `retrievedAt`) on every feed and ledger event. The risk model is a **baseline with expert-set coefficients** over synthetic seasonal baselines — see `MODEL_CARD` in `riskEngine.ts`. It must be trained on historical dwell data (CatBoost / survival analysis) before its scores are used commercially.
+Every number carries its provenance: `SIMULATED` / `LIVE` tags in the UI and a `provenance` record (`source`, `mode`, `retrievedAt`) on every feed and ledger event. See `MODEL_CARD` in `riskEngine.ts` for what is calibrated and what is not.
+
+---
+
+## 📈 Model trained on real data
+
+The **port-closure model** is fitted on real data and backtested out of time ([docs/BACKTEST.md](./docs/BACKTEST.md)):
+
+- **Ground truth:** hourly weather-station observations at Aktau (UATE0) and Baku (37864). A "closure day" = sustained wind ≥ 15 m/s.
+- **Train:** archived forecasts Jan 2022 – Feb 2024. **Test:** forecasts issued 1–3 days ahead, Mar 2024 – Dec 2025 (1,304 port-days, 53 closure days).
+
+| Lead   | AUC  | Brier skill vs. climatology | Closure days caught (model) | Old fixed rule "wind > 15 m/s" |
+| ------ | ---- | --------------------------- | --------------------------- | ------------------------------ |
+| 1 day  | 0.88 | +0.16                       | 36% (CSI 0.24)              | 2% (CSI 0.02)                  |
+| 2 days | 0.89 | +0.11                       | 32% (CSI 0.20)              | 2% (CSI 0.02)                  |
+| 3 days | 0.89 | +0.08                       | 23% (CSI 0.14)              | 0%                             |
+
+Sea-port seasonality comes from observed storm frequency 2010–2025. Dwell-time (Weibull PH) and disruption coefficients are still expert-set; they are trained on a pilot partner's dwell logs. Reproduce: `npm run data:fetch && npm run data:calibrate`.
 
 ---
 
 ## 📡 Data feeds
 
-| Feed | Default | Live option |
-|---|---|---|
-| Caspian weather | Scripted storm replay | `VITE_WEATHER_MODE=live` → Open-Meteo forecast + marine API (free, no key) |
-| Marine AIS | Simulated fleet (18 vessels) | `VITE_AIS_MODE=live` + `VITE_AIS_API_URL` → proxy returning `RawAisPosition[]` (MarineTraffic, Spire, VesselFinder, AISStream…) |
-| Rail & port dwell | Scripted CMR/SMGS replay | Forwarder GPS/IoT trackers (adapter to `DwellTimeline`) |
+| Feed              | Default                      | Live option                                                                                                                     |
+| ----------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Caspian weather   | Scripted storm replay        | `VITE_WEATHER_MODE=live` → Open-Meteo forecast + marine API (free, no key)                                                      |
+| Marine AIS        | Simulated fleet (18 vessels) | `VITE_AIS_MODE=live` + `VITE_AIS_API_URL` → proxy returning `RawAisPosition[]` (MarineTraffic, Spire, VesselFinder, AISStream…) |
+| Rail & port dwell | Scripted CMR/SMGS replay     | Forwarder GPS/IoT trackers (adapter to `DwellTimeline`)                                                                         |
 
 Each live feed falls back to simulation if it is unreachable. See [`.env.example`](./.env.example).
 
@@ -84,7 +101,7 @@ Each live feed falls back to simulation if it is unreachable. See [`.env.example
 
 ## 🛠 Tech Stack
 
-React 19 · TypeScript · TanStack Start/Router · Tailwind CSS 4 · Recharts · Radix UI · Vitest · Playwright. No Web3 dependencies.
+React 19 · TypeScript · TanStack Start/Router · Tailwind CSS 4 · Recharts · Radix UI · Vitest · Playwright · Docker (Node.js 22).
 
 ---
 
@@ -92,19 +109,25 @@ React 19 · TypeScript · TanStack Start/Router · Tailwind CSS 4 · Recharts ·
 
 ```bash
 npm install
-npm run dev          # http://localhost:8080
-npm test             # unit tests: SHA-256, ledger, telemetry, ML engine, SLA, reports, locales
+npm run dev          # http://localhost:8080 (dashboard + API under /api/v1)
+npm test             # unit tests: SHA-256, ledger, telemetry, ML engine, closure model, SLA, reports, API, locales
 npm run typecheck
 npm run lint
 npm run build
 npx playwright install chromium && npm run test:e2e
 ```
 
+## 🔌 REST API & deployment
+
+- **REST API v1** with API-key auth, JSON access log and OpenAPI 3.1 at `/api/v1/openapi.json`: corridor risk, shipments, P10–P90 ETA, SLA, audit ledger, delay reports, closure scoring — [docs/API.md](./docs/API.md).
+- **Docker**: one container (dashboard + API), non-root, read-only FS, healthcheck — `docker compose up -d --build`. QazCloud target architecture: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
+- **Compliance** (Law of RK on AI, personal-data localisation, corporate IS requirements): [docs/COMPLIANCE.md](./docs/COMPLIANCE.md).
+
 ---
 
 ## ⚠️ Status
 
-MVP with simulated data. Analytics and decision support only — not an insurance, legal or financial determination.
+MVP: simulated corridor scenario with optional live weather; port-closure model calibrated on real data. Analytics and decision support only — not an insurance, legal or financial determination.
 
 ## 📜 License & Copyright
 
@@ -122,7 +145,10 @@ Copyright © 2026 **SilkSol / s0nakh**. All rights reserved.
 - **Паспорт задержки** — запечатанный хешем отчёт с данными погоды, AIS и простоев для экспедиторов и страховых партнёров; проверяется и экспортируется в JSON.
 - Интерфейс на английском, русском и казахском (переключатель EN | RU | KK).
 
-Данные по умолчанию симулированы и помечены `СИМУЛЯЦИЯ`; погода может подключаться вживую через Open-Meteo (`VITE_WEATHER_MODE=live`), AIS — через прокси провайдера. Модель риска — базовая версия с экспертными коэффициентами, её нужно обучить на исторических данных до коммерческого использования. Запуск: `npm install && npm run dev`.
+- **Модель закрытия портов обучена на реальных данных:** наблюдения метеостанций Актау и Баку и архив прогнозов. Проверка на отложенном периоде (март 2024 – декабрь 2025, прогноз за 1–3 дня): AUC 0,88–0,89, модель ловит в 10+ раз больше штормовых дней, чем прежнее правило «ветер > 15 м/с» ([docs/BACKTEST.md](./docs/BACKTEST.md)).
+- **REST API v1** с ключами доступа и журналом, **Docker**-образ для развёртывания в QazCloud ([docs/API.md](./docs/API.md), [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)), комплаенс РК — [docs/COMPLIANCE.md](./docs/COMPLIANCE.md).
+
+Сценарий коридора по умолчанию симулирован и помечен `СИМУЛЯЦИЯ`; погода подключается вживую через Open-Meteo, AIS — через прокси провайдера. Модели простоя и ETA пока на экспертных коэффициентах и обучаются на данных пилотного партнёра. Запуск: `npm install && npm run dev`, Docker: `docker compose up -d --build`.
 
 Copyright © 2026 **SilkSol / s0nakh**. Все права защищены.
 
@@ -138,6 +164,9 @@ Copyright © 2026 **SilkSol / s0nakh**. Все права защищены.
 - **Кідіріс паспорты** — экспедиторлар мен сақтандыру серіктестеріне арналған ауа райы, AIS және тұрып қалу деректері бар, хэшпен мөрленген есеп; тексеріледі және JSON-ға экспортталады.
 - Интерфейс ағылшын, орыс және қазақ тілдерінде (EN | RU | KK ауыстырғышы).
 
-Әдепкі деректер симуляцияланған және `СИМУЛЯЦИЯ` деп белгіленген; ауа райын Open-Meteo арқылы тікелей қосуға болады (`VITE_WEATHER_MODE=live`), AIS — провайдер проксиі арқылы. Тәуекел моделі — сарапшылық коэффициенттері бар базалық нұсқа, коммерциялық қолданар алдында тарихи деректерде оқытылуы тиіс. Іске қосу: `npm install && npm run dev`.
+- **Порттың жабылу моделі нақты деректерде оқытылған:** Ақтау мен Баку метеостанцияларының бақылаулары және болжамдар мұрағаты. Кейінге қалдырылған кезеңде (2024 ж. наурыз – 2025 ж. желтоқсан, 1–3 күн бұрын) AUC 0,88–0,89 ([docs/BACKTEST.md](./docs/BACKTEST.md)).
+- **REST API v1** және QazCloud-та орналастыруға арналған **Docker** бейнесі ([docs/API.md](./docs/API.md), [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)).
+
+Дәліз сценарийі әдепкі бойынша симуляцияланған және `СИМУЛЯЦИЯ` деп белгіленген. Тұрып қалу және ETA модельдері пилоттық серіктестің деректерінде оқытылады. Іске қосу: `npm install && npm run dev`.
 
 Copyright © 2026 **SilkSol / s0nakh**. Барлық құқықтар қорғалған.

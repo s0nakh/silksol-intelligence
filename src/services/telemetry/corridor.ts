@@ -1,6 +1,8 @@
+import calibration from "@/services/ml/caspianCalibration.json";
+
 // Static model of the Trans-Caspian International Transport Route (TITR / Middle Corridor).
-// Dwell baselines, SLA thresholds and seasonal indices are SYNTHETIC planning assumptions, not
-// measured data. Replace them with historical exports (KTZ, Port of Aktau, ADY, Port of Baku)
+// Dwell baselines, SLA thresholds and rail seasonality are SYNTHETIC planning assumptions, not
+// measured data (sea-port seasonality is derived from station observations, see below). Replace them with historical exports (KTZ, Port of Aktau, ADY, Port of Baku)
 // before using the risk scores for commercial decisions.
 
 export type NodeId =
@@ -175,10 +177,22 @@ export const TRACKER_ROUTE: NodeId[] = ["lianyungang", "khorgos", "aktau", "baku
 /** Port closes for ferry/ro-ro operations at sustained wind above this (m/s). */
 export const PORT_CLOSURE_WIND_MS = 15;
 
-// Monthly dwell index relative to the annual mean (Jan … Dec). Caspian ports peak with
-// autumn/winter storms; rail borders peak with Q4 volume. SYNTHETIC baseline.
+// Sea ports: observed share of storm-closure days per month at Aktau and Baku (station data,
+// 2010–2025 — scripts/data/calibrate-closure.mjs), mapped to a dwell index around 1 with
+// damping SEA_PORT_SENSITIVITY until dwell logs let us fit the elasticity directly.
+const SEA_PORT_SENSITIVITY = 0.25;
+
+function seaPortSeasonality(): number[] {
+  const { aktau, baku } = calibration.climatology.closureDayShareByMonth;
+  const share = aktau.map((a, m) => (a + baku[m]!) / 2);
+  const mean = share.reduce((s, v) => s + v, 0) / share.length;
+  return share.map((v) => Math.round((1 + SEA_PORT_SENSITIVITY * (v / mean - 1)) * 100) / 100);
+}
+
+// Monthly dwell index relative to the annual mean (Jan … Dec). Rail borders peak with Q4
+// volume — SYNTHETIC baseline until rail dwell logs are available.
 const SEASONAL_INDEX: Record<NodeKind, number[]> = {
-  sea_port: [1.25, 1.2, 1.1, 0.95, 0.9, 0.85, 0.85, 0.9, 0.95, 1.05, 1.2, 1.3],
+  sea_port: seaPortSeasonality(),
   rail_border: [1.1, 1.0, 1.05, 1.0, 0.95, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25],
   rail_terminal: [1.05, 1.0, 1.0, 0.95, 0.95, 0.95, 1.0, 1.0, 1.05, 1.05, 1.1, 1.15],
 };

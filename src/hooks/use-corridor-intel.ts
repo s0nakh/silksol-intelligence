@@ -7,7 +7,11 @@ import {
 } from "@/services/ledger/auditLedger";
 import { buildCargoLedgers } from "@/services/ledger/cargoLedger";
 import { forecastCorridor } from "@/services/ml/riskEngine";
-import { buildDelayReport, type DelayReport } from "@/services/reports/delayReport";
+import {
+  buildDelayReport,
+  reportIssuedEvent,
+  type DelayReport,
+} from "@/services/reports/delayReport";
 import {
   evaluateSla,
   shipmentStatus,
@@ -125,21 +129,7 @@ export function useCorridorIntel() {
       });
       setLedgers((prev) => ({
         ...prev,
-        [cargoId]: appendEntry(prev[cargoId] ?? [], cargoId, {
-          type: "REPORT_ISSUED",
-          occurredAt: report.issuedAt,
-          node: shipment.route[shipment.currentIndex]!,
-          payload: {
-            reportId: report.reportId,
-            reportHash: report.reportHash,
-            ledgerHead: report.ledger.head,
-          },
-          provenance: {
-            source: "SilkSol Intelligence report service",
-            mode: "simulated",
-            retrievedAt: report.issuedAt,
-          },
-        }),
+        [cargoId]: appendEntry(prev[cargoId] ?? [], cargoId, reportIssuedEvent(report)),
       }));
       setReports((prev) => ({ ...prev, [cargoId]: report }));
       return report;

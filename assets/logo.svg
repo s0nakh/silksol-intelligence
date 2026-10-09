@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 200" role="img" aria-label="SilkSol Intelligence">
+  <defs>
+    <linearGradient id="route" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 0) scale(0.390625)">
+    <rect width="512" height="512" rx="112" fill="#11131f"/>
+    <path d="M96 336 C 176 336, 176 176, 256 176 S 336 336, 416 336" fill="none" stroke="url(#route)" stroke-width="36" stroke-linecap="round"/>
+    <path d="M120 404 q 34 -22 68 0 t 68 0 t 68 0 t 68 0" fill="none" stroke="#2dd4bf" stroke-opacity="0.55" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="96" cy="336" r="34" fill="#11131f" stroke="#8b5cf6" stroke-width="20"/>
+    <circle cx="256" cy="176" r="40" fill="#8b5cf6"/>
+    <circle cx="416" cy="336" r="34" fill="#11131f" stroke="#2dd4bf" stroke-width="20"/>
+  </g>
+  <text x="236" y="98" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#8b5cf6">SilkSol</text>
+  <text x="236" y="168" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="56" font-weight="500" fill="#2dd4bf" letter-spacing="2">Intelligence</text>
+</svg>

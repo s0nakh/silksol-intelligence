@@ -1,0 +1,19 @@
+# Local / single-VM deployment (e.g. a QazCloud VM). Secrets come from .env (never committed).
+services:
+  silksol:
+    build: .
+    image: silksol-intelligence:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SILKSOL_WEATHER_MODE: ${SILKSOL_WEATHER_MODE:-live}
+      SILKSOL_AIS_MODE: ${SILKSOL_AIS_MODE:-mock}
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

@@ -143,6 +143,39 @@ The demo runs a simulated corridor scenario (clearly labelled); tariffs in the c
 
 ---
 
+## 🚀 Pilot plan & KPIs
+
+A 3-month pilot on the **Aktau – Baku** route with a rail or port operator, run on QazCloud.
+
+```mermaid
+gantt
+  title Pilot on Aktau – Baku (3 months)
+  dateFormat YYYY-MM-DD
+  axisFormat %b %Y
+  tickInterval 1month
+  section Month 1 · Data
+  Deploy in QazCloud, SSO, access          :m1a, 2026-12-01, 14d
+  Load 1–2 years of dwell & closure history :m1b, after m1a, 16d
+  section Month 2 · Models
+  Train dwell & ETA models on partner data  :m2a, after m1b, 20d
+  Plug in contract tariffs, back-test       :m2b, after m2a, 10d
+  section Month 3 · Live
+  Shadow mode next to dispatchers           :m3a, after m2b, 20d
+  Results report & scale-up decision        :m3b, after m3a, 10d
+```
+
+| KPI                              | How it is measured                                                                               | Target                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| ETA accuracy                     | Error of the predicted arrival vs. actual, compared with the partner's current planning          | Better than the current plan, agreed at kick-off |
+| Storm closures warned in advance | Share of closure days flagged ≥ 24 h ahead, on the harbour master's own log                      | ≥ 30% (already 36% on the weather proxy)         |
+| Money saved                      | ₸ of demurrage, wagon idle and SLA penalties avoided on the recommendations dispatchers accepted | Reported per shipment and in total               |
+| Disputes                         | Delay disputes settled with a Passport of Delay vs. before the pilot                             | Fewer disputes, shorter settlement               |
+| Adoption                         | Dispatchers using the dashboard weekly; recommendations accepted                                 | Agreed at kick-off                               |
+
+**What we need from the partner:** a VM or namespace in QazCloud with SSO; 1–2 years of dwell events (arrivals / departures per node, CMR / SMGS) and the harbour master's closure log; contract tariffs; one dispatcher team for shadow mode and feedback.
+
+---
+
 ## ☁️ Deployment in QazCloud
 
 ```mermaid
@@ -162,6 +195,33 @@ flowchart TB
 - One container (dashboard + API), non-root, read-only file system, health check.
 - All data, backups and personal data stay in Kazakhstan; deployment in the customer's perimeter.
 - Compliance with the Law of RK "On AI", personal-data localisation and corporate IS requirements: [docs/COMPLIANCE.md](./docs/COMPLIANCE.md). Deployment: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md). API: [docs/API.md](./docs/API.md).
+
+---
+
+## ⚡ Why QazCloud
+
+| QazCloud resource                | What SilkSol uses it for                                                                                                                                                                                                                              |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **GPU**                          | Local LLM for the Russian / Kazakh dispatcher assistant (inference and fine-tuning on logistics language) — no data goes to foreign AI APIs; large scenario simulations and hyper-parameter search when models are retrained on the partner's history |
+| **CPU / Kubernetes**             | Dashboard and REST API, forecasting and what-if engine, scheduled retraining of dwell and ETA models                                                                                                                                                  |
+| **Storage in Kazakhstan**        | Partner's dwell history, audit trail, delay reports, training datasets — personal data stays in the country                                                                                                                                           |
+| **AI & data-science expertise**  | Review of the validation protocol, model monitoring, MLOps practices                                                                                                                                                                                  |
+| **Pilot in a portfolio company** | Real dwell data and harbour-master logs — the one thing that turns the expert-set dwell model into a trained one                                                                                                                                      |
+
+---
+
+## 🛡 Security
+
+| Control        | How                                                                                                                              | Status |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| API access     | Per-client API keys, stored as SHA-256 digests, constant-time comparison; health and spec endpoints only are public              | ✅     |
+| Audit          | JSON access log for every API call (client name, never the key) → customer SIEM; tamper-evident SHA-256 audit trail per shipment | ✅     |
+| Container      | Non-root user, read-only file system, no-new-privileges, health check                                                            | ✅     |
+| Secrets        | Only in environment / secret store — never in the image or the repository                                                        | ✅     |
+| Data residency | All data, backups and personal data in QazCloud data centres in Kazakhstan                                                       | Pilot  |
+| Identity       | SSO via the customer's IdP (OIDC) or Keycloak; role-based access                                                                 | Pilot  |
+| Network        | TLS, WAF and rate limiting on the QazCloud load balancer                                                                         | Pilot  |
+| Supply chain   | Locked dependencies; image vulnerability scanning in the pilot CI                                                                | Pilot  |
 
 ---
 
@@ -247,6 +307,18 @@ Full terms: [LICENSE](./LICENSE).
 
 Развёртывание в QazCloud, хранение данных в РК, соответствие Закону РК «Об ИИ»: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md), [docs/COMPLIANCE.md](./docs/COMPLIANCE.md).
 
+### План пилота (3 месяца, Актау – Баку)
+
+1-й месяц — развёртывание в QazCloud и загрузка истории простоев и журнала закрытий; 2-й — обучение моделей простоя и ETA на данных партнёра, подключение договорных тарифов; 3-й — работа в «теневом режиме» рядом с диспетчерами и отчёт. **KPI:** точность ETA против текущего планирования, доля штормовых закрытий, предупреждённых за ≥ 24 ч (цель ≥ 30%, на погодной метке уже 36%), сэкономленные ₸ по принятым рекомендациям, число споров о задержках. **От партнёра:** ВМ в QazCloud с SSO, 1–2 года событий простоя и журнал закрытий портов, договорные тарифы, команда диспетчеров для обратной связи.
+
+### Зачем нам QazCloud
+
+GPU — для локальной LLM ассистента диспетчера на русском и казахском (данные не уходят в зарубежные ИИ-сервисы) и больших сценарных симуляций при переобучении; CPU/Kubernetes — для дашборда, API и моделей; хранилище в РК — для данных партнёра и персональных данных; пилот в портфельной компании — реальные данные о простоях, без которых модель простоя не обучить.
+
+### Безопасность
+
+API-ключи по клиентам (хранятся как SHA-256), журнал доступа для SIEM, защищённый от подделки журнал событий груза, контейнер без root и с файловой системой только для чтения, секреты только в окружении — **сделано**. Хранение данных в ЦОД QazCloud, SSO, TLS/WAF, сканирование образов — **в пилоте**.
+
 ### Интеллектуальная собственность
 
 **SilkSol Intelligence — проприетарное программное обеспечение. Репозиторий опубликован только для ознакомления и не является open source.** © 2026 SilkSol / s0nakh. Все права защищены. Код, модели и их параметры, методы калибровки и оценки, логика тарифов и рекомендаций, интерфейс, название и логотип охраняются Законом РК «Об авторском праве и смежных правах» и Гражданским кодексом РК. Лицензия не предоставляется: копирование, изменение, развёртывание, продажа, создание производных продуктов и использование для обучения других систем без письменного разрешения запрещены. Нарушения преследуются по законодательству РК. Сотрудничество и пилоты: sophia.akhmetova@datariglab.kz. Полный текст: [LICENSE](./LICENSE).
@@ -281,6 +353,10 @@ Full terms: [LICENSE](./LICENSE).
 ### ML және сапа
 
 Модель тек оқиғадан 1, 2 және 3 күн бұрын шын мәнінде қолжетімді болған болжамдарда бағаланады. Нәтижелер — үлестірімдер (P10–P90), әр бағаның факторлары көрсетіледі. 52 unit-тест, ядроның 95% жолдары тестпен қамтылған, 11 e2e-сценарий, GitHub Actions CI-воркфлоулары.
+
+### Пилот, QazCloud және қауіпсіздік
+
+3 айлық пилот Ақтау – Баку бағытында: QazCloud-та орналастыру, серіктестің тұрып қалу тарихында модельдерді оқыту, диспетчерлермен «көлеңкелі режим». KPI: ETA дәлдігі, дауылдық жабылуларды ≥ 24 сағат бұрын ескерту үлесі, ұсыныстар бойынша үнемделген теңге. GPU — орыс және қазақ тілдеріндегі диспетчер ассистентінің жергілікті LLM-і үшін. API кілттері, SIEM-ге арналған журнал, root-сыз контейнер — дайын; деректерді ҚР-да сақтау, SSO, TLS/WAF — пилотта.
 
 ### Зияткерлік меншік
 

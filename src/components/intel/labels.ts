@@ -26,6 +26,15 @@ export function reasonText(i18n: I18n, r: BottleneckReason) {
   }
 }
 
+const MILLION = 1_000_000;
+
+/** Tenge amount: "640 000 ₸", or "1,73 млн ₸" when compact and ≥ 1 M. */
+export function kzt(i18n: I18n, amount: number, compact = false) {
+  if (compact && Math.abs(amount) >= MILLION)
+    return `${i18n.num(amount / MILLION, 2)} ${i18n.t("units.mln")} ₸`;
+  return `${i18n.num(amount)} ₸`;
+}
+
 export const riskBand = (i18n: I18n, risk: number) =>
   i18n.t(
     risk >= 70

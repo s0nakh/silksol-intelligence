@@ -62,7 +62,8 @@ export const OPENAPI_SPEC = {
     },
     "/corridor": {
       get: {
-        summary: "Corridor risk index, bottlenecks, port-closure outlook and data provenance",
+        summary:
+          "Corridor risk index, bottlenecks, port-closure outlook, expected delay cost (KZT) and data provenance",
         responses: { "200": ok("Corridor summary"), ...errors },
       },
     },
@@ -88,7 +89,8 @@ export const OPENAPI_SPEC = {
     },
     "/shipments/{id}": {
       get: {
-        summary: "Shipment forecast (P10–P90 ETA, risk drivers), SLA checks and dwell timeline",
+        summary:
+          "Shipment forecast (P10–P90 ETA, risk drivers), SLA checks, expected delay cost in KZT with recommended actions, dwell timeline",
         parameters: [id],
         responses: { "200": ok("Shipment"), ...errors },
       },

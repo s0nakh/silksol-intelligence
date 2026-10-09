@@ -1,4 +1,6 @@
 import { chainHead, ledgerRoot, verifyChain } from "@/services/ledger/auditLedger";
+import { DELAY_TARIFFS } from "@/services/economics/delayCost";
+import { economicsSummary } from "@/services/economics/recommendations";
 import { closureProbability, CLOSURE_CALIBRATION } from "@/services/ml/closureModel";
 import { MODEL_CARD } from "@/services/ml/riskEngine";
 import { verifyDelayReport, type DelayReport } from "@/services/reports/delayReport";
@@ -120,6 +122,7 @@ export function createApi(options: ApiOptions) {
           corridorRisk: s.forecast.corridorRisk,
           bottlenecks: s.forecast.bottlenecks,
           closureOutlook: s.forecast.closureOutlook,
+          economics: { ...economicsSummary(s.economics), tariffs: DELAY_TARIFFS },
           queues: s.snapshot.ais.queues,
           provenance: {
             weather: Object.fromEntries(
@@ -163,6 +166,8 @@ export function createApi(options: ApiOptions) {
               etaDriftH: f.etaDriftH,
               predictedEta: f.predictedEta,
               slaStatus: s.sla[sh.id]?.status,
+              expectedLossKzt: s.economics[sh.id]?.cost.totalKzt,
+              recommendedActions: s.economics[sh.id]?.recommendations.length ?? 0,
             };
           }),
         });
@@ -180,6 +185,7 @@ export function createApi(options: ApiOptions) {
           status: s.statuses[shipment.id],
           forecast: s.forecast.shipments[shipment.id],
           sla: s.sla[shipment.id],
+          economics: s.economics[shipment.id],
           dwell: s.snapshot.timelines[shipment.id],
           reportIssued: Boolean(s.reports[shipment.id]),
         });

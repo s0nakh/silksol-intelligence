@@ -21,20 +21,20 @@ API gateway / reverse proxy in front of the container.
 
 ## Endpoints
 
-| Method | Path                                  | Purpose                                                                                    |
-| ------ | ------------------------------------- | ------------------------------------------------------------------------------------------ |
-| GET    | `/health`                             | Liveness, version, feed mode, auth mode (public)                                           |
-| GET    | `/openapi.json`                       | OpenAPI 3.1 spec (public)                                                                  |
-| GET    | `/model`                              | Model card, closure-model coefficients, out-of-time backtest                               |
-| GET    | `/corridor`                           | Corridor risk index, bottlenecks with reason codes, 3-day port-closure outlook, provenance |
-| GET    | `/ports/{aktau\|kuryk\|baku}/weather` | Hourly wind / gust / waves (−48 h … +72 h) and closure outlook                             |
-| GET    | `/shipments`                          | Shipments with risk, ETA drift, status, SLA status                                         |
-| GET    | `/shipments/{id}`                     | P10–P90 ETA, risk drivers, SLA checks, dwell timeline                                      |
-| GET    | `/shipments/{id}/ledger`              | SHA-256 hash-chained audit trail + verification                                            |
-| POST   | `/shipments/{id}/delay-report`        | Issue a hash-sealed Passport of Delay, anchored in the ledger                              |
-| GET    | `/shipments/{id}/delay-report`        | Last issued report                                                                         |
-| POST   | `/reports/verify`                     | Re-verify any report JSON (report hash + embedded chain)                                   |
-| POST   | `/risk/closure`                       | Calibrated closure probability for `{ maxWindMs, maxGustMs }`                              |
+| Method | Path                                  | Purpose                                                                                                      |
+| ------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| GET    | `/health`                             | Liveness, version, feed mode, auth mode (public)                                                             |
+| GET    | `/openapi.json`                       | OpenAPI 3.1 spec (public)                                                                                    |
+| GET    | `/model`                              | Model card, closure-model coefficients, out-of-time backtest                                                 |
+| GET    | `/corridor`                           | Corridor risk index, bottlenecks with reason codes, 3-day port-closure outlook, provenance                   |
+| GET    | `/ports/{aktau\|kuryk\|baku}/weather` | Hourly wind / gust / waves (−48 h … +72 h) and closure outlook                                               |
+| GET    | `/shipments`                          | Shipments with risk, ETA drift, status, SLA status                                                           |
+| GET    | `/shipments/{id}`                     | P10–P90 ETA, risk drivers, SLA checks, expected delay cost (KZT) and options with net saving, dwell timeline |
+| GET    | `/shipments/{id}/ledger`              | SHA-256 hash-chained audit trail + verification                                                              |
+| POST   | `/shipments/{id}/delay-report`        | Issue a hash-sealed Passport of Delay, anchored in the ledger                                                |
+| GET    | `/shipments/{id}/delay-report`        | Last issued report                                                                                           |
+| POST   | `/reports/verify`                     | Re-verify any report JSON (report hash + embedded chain)                                                     |
+| POST   | `/risk/closure`                       | Calibrated closure probability for `{ maxWindMs, maxGustMs }`                                                |
 
 ## Examples
 

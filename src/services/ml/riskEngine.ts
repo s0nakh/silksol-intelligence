@@ -124,6 +124,7 @@ export function nodeFeatures(
   at: Date,
   exposed: boolean,
   customsHold = false,
+  priorityBerth = false,
 ): NodeFeatures {
   const kind = NODES[node].kind;
   const base = {
@@ -136,7 +137,8 @@ export function nodeFeatures(
   const w = weatherAt(ctx.snap.weather[node], at);
   const h = clamp(Math.round(hoursBetween(ctx.now, at)), 0, 240);
   const anchored = ctx.queues[node][h] ?? ctx.snap.ais.queues[node].anchored;
-  const density = anchored / ((NODES[node].berths ?? 1) * 2);
+  // A priority berth slot skips the roadstead queue (what-if scenario).
+  const density = priorityBerth ? 0 : anchored / ((NODES[node].berths ?? 1) * 2);
   return {
     ...base,
     weatherSeverity: w.severity,
@@ -252,6 +254,7 @@ function sampleRemainingDwell(
   exposed: boolean,
   u: number,
   customsHold: boolean,
+  priorityBerth = false,
 ) {
   const lambda = NODES[node].baseDwellH;
   const target = -Math.log(Math.max(u, 1e-12));
@@ -259,7 +262,7 @@ function sampleRemainingDwell(
   let acc = 0;
   for (let h = 0; h < MAX_DWELL_H; h++) {
     const mult = hazardMultiplier(
-      nodeFeatures(ctx, node, addHours(start, h), exposed, customsHold),
+      nodeFeatures(ctx, node, addHours(start, h), exposed, customsHold, priorityBerth),
     );
     const step = (H0(elapsedH + h + 1) - H0(elapsedH + h)) * mult;
     if (acc + step >= target) return h + (target - acc) / step;
@@ -285,6 +288,10 @@ export type ShipmentForecast = {
   currentNodeRemainingH: number;
   /** P(current node dwell ends above its SLA threshold), 0–100. */
   currentNodeSlaRisk: number;
+  /** Mean lateness beyond the contractual ETA, hours (0 when on time). */
+  expectedLateH: number;
+  /** Mean dwell above the planned dwell at the current node, hours. */
+  expectedExcessDwellH: number;
   features: NodeFeatures;
   contributions: Contribution[];
 };
@@ -292,10 +299,19 @@ export type ShipmentForecast = {
 export const isExposed = (s: Shipment) =>
   s.phase === "awaiting_vessel" || s.phase === "at_roadstead";
 
+/** What-if levers evaluated with the same random draws as the baseline forecast. */
+export type ForecastScenario = {
+  /** Priority ferry / berth slot at the current node: no roadstead queue. */
+  priorityBerth?: boolean;
+};
+
+const mean = (values: number[]) => values.reduce((a, b) => a + b, 0) / Math.max(1, values.length);
+
 export function forecastShipment(
   ctx: EngineContext,
   s: Shipment,
   samples = MODEL_CARD.samples,
+  scenario: ForecastScenario = {},
 ): ShipmentForecast {
   const timeline = ctx.snap.timelines[s.id];
   if (!timeline) throw new Error(`No dwell timeline for ${s.id}`);
@@ -310,7 +326,16 @@ export function forecastShipment(
   const remaining: number[] = [];
   let slaBreaches = 0;
   for (let i = 0; i < samples; i++) {
-    const rem = sampleRemainingDwell(ctx, node, ctx.now, elapsed, exposed, next(), !!s.customsHold);
+    const rem = sampleRemainingDwell(
+      ctx,
+      node,
+      ctx.now,
+      elapsed,
+      exposed,
+      next(),
+      !!s.customsHold,
+      !!scenario.priorityBerth,
+    );
     remaining.push(rem);
     if (elapsed + rem > sla) slaBreaches++;
     let t = addHours(ctx.now, rem);
@@ -342,6 +367,10 @@ export function forecastShipment(
     etaP90: etaAt(quantile(lateness, 0.9)),
     currentNodeRemainingH: round(quantile(remaining, 0.5)),
     currentNodeSlaRisk: Math.round((100 * slaBreaches) / samples),
+    expectedLateH: round(mean(lateness.map((l) => Math.max(0, l)))),
+    expectedExcessDwellH: round(
+      mean(remaining.map((r) => Math.max(0, elapsed + r - NODES[node].plannedDwellH))),
+    ),
     features,
     contributions: contributions(features),
   };

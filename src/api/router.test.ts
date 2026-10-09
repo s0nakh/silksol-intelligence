@@ -53,6 +53,9 @@ describe("REST API v1", () => {
     expect(shipments.length).toBeGreaterThan(0);
     const detail = await (await call(`/shipments/${shipments[0].id}`)).json();
     expect(detail.forecast.etaP10 <= detail.forecast.etaP90).toBe(true);
+    expect(detail.economics.cost.totalKzt).toBeGreaterThanOrEqual(0);
+    expect(Array.isArray(detail.economics.options)).toBe(true);
+    expect(corridor.economics.tariffs.status).toBe("planning_assumptions");
     expect((await call("/shipments/NOPE-1")).status).toBe(404);
     expect((await call("/ports/atlantis/weather")).status).toBe(404);
   });

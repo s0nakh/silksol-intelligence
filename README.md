@@ -62,6 +62,8 @@ Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 - **Marine AIS** — simulated Caspian fleet with roadstead queues; live adapter for any AIS provider via a proxy.
 - **Cryptographic audit trail** — per-cargo SHA-256 chain, ledger root over all chain heads, one-click re-verification; tampering, deletion or reordering is detected.
 - **Passport of Delay** — delay attribution (storm closure / port queue / rail border / terminal handling), evidence tables, sources with provenance, integrity check and JSON export; issuing it anchors the report hash in the cargo's chain.
+- **Cost of delay in tenge** — expected loss per shipment from the Monte Carlo forecast: storage & demurrage, wagon idle, SLA penalties, late delivery. Tariffs are demo assumptions (`src/services/economics/delayCost.ts`); a pilot plugs in the partner's contract rates.
+- **What to do, with savings** — the engine re-runs the forecast for each operational lever with the same random draws (switch the departure port Aktau ↔ Kuryk, priority ferry slot, hold wagons upstream during a forecast storm) and shows net saving in ₸, risk and ETA before/after — including the options that are not worth it.
 - **Three languages** — English, Russian, Kazakh with an EN | RU | KK switcher in the header (choice remembered per browser).
 
 ### Honesty labels
@@ -146,6 +148,7 @@ Copyright © 2026 **SilkSol / s0nakh**. All rights reserved.
 - Интерфейс на английском, русском и казахском (переключатель EN | RU | KK).
 
 - **Модель закрытия портов обучена на реальных данных:** наблюдения метеостанций Актау и Баку и архив прогнозов. Проверка на отложенном периоде (март 2024 – декабрь 2025, прогноз за 1–3 дня): AUC 0,88–0,89, модель ловит в 10+ раз больше штормовых дней, чем прежнее правило «ветер > 15 м/с» ([docs/BACKTEST.md](./docs/BACKTEST.md)).
+- **Стоимость задержки в тенге** по каждому грузу (хранение и демередж, простой вагонов, штрафы SLA, опоздание) и **рекомендации «что делать»**: смена порта Актау ↔ Курык, приоритетная погрузка на паром, придержать вагоны на время шторма — с чистой экономией в ₸, риском и ETA до/после. Тарифы в демо условные, в пилоте — ставки партнёра.
 - **REST API v1** с ключами доступа и журналом, **Docker**-образ для развёртывания в QazCloud ([docs/API.md](./docs/API.md), [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)), комплаенс РК — [docs/COMPLIANCE.md](./docs/COMPLIANCE.md).
 
 Сценарий коридора по умолчанию симулирован и помечен `СИМУЛЯЦИЯ`; погода подключается вживую через Open-Meteo, AIS — через прокси провайдера. Модели простоя и ETA пока на экспертных коэффициентах и обучаются на данных пилотного партнёра. Запуск: `npm install && npm run dev`, Docker: `docker compose up -d --build`.

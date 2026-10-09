@@ -6,6 +6,7 @@ import {
   type LedgerEntry,
 } from "@/services/ledger/auditLedger";
 import { buildCargoLedgers } from "@/services/ledger/cargoLedger";
+import { assessEconomics } from "@/services/economics/recommendations";
 import { forecastCorridor } from "@/services/ml/riskEngine";
 import {
   buildDelayReport,
@@ -48,6 +49,7 @@ export function useCorridorIntel() {
   const [secondsAgo, setSecondsAgo] = useState(0);
 
   const forecast = useMemo(() => forecastCorridor(snapshot), [snapshot]);
+  const economics = useMemo(() => assessEconomics(snapshot, forecast), [snapshot, forecast]);
   const startRisk = useRef(forecast.corridorRisk);
 
   // Audit chains are built once per scenario epoch; later events (reports) are appended.
@@ -152,6 +154,7 @@ export function useCorridorIntel() {
   return {
     snapshot,
     forecast,
+    economics,
     sla,
     statuses,
     ledgers,

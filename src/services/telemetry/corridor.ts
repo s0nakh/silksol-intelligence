@@ -169,6 +169,9 @@ export function transitHours(from: NodeId, to: NodeId): number {
   return h;
 }
 
+/** True when the corridor model has a leg from → to. */
+export const hasLeg = (from: NodeId, to: NodeId) => TRANSIT_H[`${from}>${to}`] !== undefined;
+
 export const isSeaLeg = (from: NodeId, to: NodeId) => isCaspianPort(from) && isCaspianPort(to);
 
 /** Corridor-wide dashboard route (Lianyungang → Khorgos → Aktau → Baku → Poti/Istanbul). */

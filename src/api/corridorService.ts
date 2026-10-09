@@ -1,5 +1,6 @@
 import { appendEntry, type LedgerEntry } from "@/services/ledger/auditLedger";
 import { buildCargoLedgers } from "@/services/ledger/cargoLedger";
+import { assessEconomics, type ShipmentEconomics } from "@/services/economics/recommendations";
 import { forecastCorridor, type CorridorForecast } from "@/services/ml/riskEngine";
 import {
   buildDelayReport,
@@ -32,6 +33,7 @@ export type CorridorState = {
   forecast: CorridorForecast;
   sla: Record<string, ShipmentSla>;
   statuses: Record<string, ShipmentStatus>;
+  economics: Record<string, ShipmentEconomics>;
   ledgers: Record<string, LedgerEntry[]>;
   reports: Record<string, DelayReport>;
   refreshedAt: number;
@@ -89,6 +91,7 @@ export class CorridorService {
       forecast,
       sla,
       statuses,
+      economics: assessEconomics(snapshot, forecast),
       ledgers,
       reports: this.state?.reports ?? {},
       refreshedAt: this.clock(),

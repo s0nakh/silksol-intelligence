@@ -37,7 +37,10 @@
     "predicted": "+{n} predicted",
     "etaDrift": "Avg ETA drift",
     "etaDriftDetail": "median vs contract",
-    "p90": "P90 {h}"
+    "p90": "P90 {h}",
+    "expectedLoss": "Expected delay cost",
+    "expectedLossDetail": "across {n} shipments",
+    "savings": "save {v}"
   },
   "band": {
     "low": "Low risk",
@@ -311,10 +314,35 @@
     "kn": "kn",
     "ms": "m/s",
     "m": "m",
-    "kmh": "km/h"
+    "kmh": "km/h",
+    "mln": "M"
   },
   "calendar": {
     "months": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
     "weekdays": "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
+  },
+  "econ": {
+    "eyebrow": "Delay economics",
+    "title": "Cost of delay · {id}",
+    "total": "Expected loss for this cargo",
+    "storage": "Storage & demurrage",
+    "wagonIdle": "Wagon idle",
+    "slaPenalty": "SLA penalties",
+    "lateDelivery": "Late delivery to consignee",
+    "options": "What to do",
+    "recommended": "Worth it",
+    "notWorth": "Not worth it",
+    "net": "net saving {v}",
+    "loss": "net loss {v}",
+    "risk": "risk {a}% → {b}%",
+    "eta": "ETA {h}",
+    "actionCost": "action cost {v}",
+    "switch_port": "Ship via {to} instead of {from}",
+    "priority_berth": "Priority ferry slot · {to}",
+    "hold_upstream": "Hold wagons at {from} for ~{h} h (storm at {to})",
+    "simulation": "model scenario",
+    "estimate": "weather-forecast estimate",
+    "none": "No applicable actions at this stage of the shipment.",
+    "tariffNote": "Tariffs are demo assumptions. A pilot uses the partner’s contract rates."
   }
 }

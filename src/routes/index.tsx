@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   Check,
   ChevronRight,
+  Banknote,
   Clock3,
   Container,
   FileCheck2,
@@ -37,12 +38,14 @@ import { Button } from "@/components/ui/button";
 import { AuditDrawer } from "@/components/intel/AuditDrawer";
 import { DelayReportDialog } from "@/components/intel/DelayReportDialog";
 import { DemoTag } from "@/components/intel/DemoTag";
+import { EconomicsPanel } from "@/components/intel/EconomicsPanel";
 import { LanguageSwitcher } from "@/components/intel/LanguageSwitcher";
 import { SlaMonitor } from "@/components/intel/SlaMonitor";
 import { WeatherPanel } from "@/components/intel/WeatherPanel";
-import { countryName, nodeName, reasonText, riskBand } from "@/components/intel/labels";
+import { countryName, kzt, nodeName, reasonText, riskBand } from "@/components/intel/labels";
 import { useCorridorIntel } from "@/hooks/use-corridor-intel";
 import { DISPLAY_TZ_LABEL, translate, useI18n } from "@/i18n";
+import { economicsSummary } from "@/services/economics/recommendations";
 import { shortHash } from "@/services/ledger/sha256";
 import { attributeDelay, primaryCause } from "@/services/reports/delayReport";
 import {
@@ -157,6 +160,7 @@ function Dashboard() {
     ),
   );
   const delta = Math.round(intel.riskDelta * 10) / 10;
+  const money = economicsSummary(intel.economics);
 
   const kpis = [
     {
@@ -196,6 +200,15 @@ function Dashboard() {
       icon: Clock3,
       tone: "success",
       good: avgDrift <= 0,
+    },
+    {
+      label: t("kpi.expectedLoss"),
+      value: kzt(i18n, money.expectedLossKzt, true),
+      detail: t("kpi.expectedLossDetail", { n: shipments.length }),
+      change: t("kpi.savings", { v: kzt(i18n, money.savingsAvailableKzt, true) }),
+      icon: Banknote,
+      tone: "primary",
+      good: money.savingsAvailableKzt > 0,
     },
   ];
 
@@ -280,7 +293,7 @@ function Dashboard() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {kpis.map((kpi) => {
             const Icon = kpi.icon;
             return (
@@ -477,6 +490,7 @@ function Dashboard() {
 
           <div className="grid min-w-0 gap-4">
             <SlaMonitor shipment={selected} forecast={selForecast} sla={selSla} />
+            <EconomicsPanel economics={intel.economics[selected.id]!} />
             <div className="panel overflow-hidden">
               <PanelHeader
                 icon={Sparkles}

@@ -12,8 +12,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/s0nakh/silksol-intelligence/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/s0nakh/silksol-intelligence/actions/workflows/ci.yml/badge.svg"/></a>
-  <a href="https://github.com/s0nakh/silksol-intelligence/actions/workflows/e2e.yml"><img alt="E2E" src="https://github.com/s0nakh/silksol-intelligence/actions/workflows/e2e.yml/badge.svg"/></a>
   <a href="#-quality--testing"><img alt="Tests: 52 unit, 11 E2E" src="https://img.shields.io/badge/tests-52%20unit%20%C2%B7%2011%20e2e-2ea44f"/></a>
   <a href="#-quality--testing"><img alt="Core coverage 95% lines" src="https://img.shields.io/badge/core%20coverage-95%25%20lines-2ea44f"/></a>
   <a href="#-validated-on-real-data"><img alt="Port-closure AUC 0.88–0.89" src="https://img.shields.io/badge/port--closure%20AUC-0.88%E2%80%930.89-2dd4bf"/></a>
@@ -123,7 +121,7 @@ The port-closure forecast was trained on real weather-station observations at Ak
 | Unit & integration (Vitest) | Forecasting engine, port-closure model, cost of delay and recommendations, SLA, audit trail, delay reports, REST API, translations          | **52 tests**, all passing                                     |
 | Coverage of the core        | Services and API                                                                                                                            | **95% lines** · 93% statements · 94% functions · 80% branches |
 | End-to-end (Playwright)     | Real browser against the production build: dashboard, risk chart, SLA monitor, delay report issue & verification, audit trail, EN → RU → KK | **11 scenarios**, all passing                                 |
-| CI (GitHub Actions)         | Typecheck, lint, unit tests with coverage, production build; E2E suite                                                                      | On every push to `main`                                       |
+| CI (GitHub Actions)         | Typecheck, lint, unit tests with coverage, production build; E2E suite                                                                      | Workflows in `.github/workflows`, triggered on push to `main` |
 
 ---
 
@@ -241,7 +239,7 @@ Full terms: [LICENSE](./LICENSE).
 - **Без утечки будущего:** модель оценивается только на прогнозах, которые реально были доступны за 1, 2 и 3 дня до события, отдельно по каждому горизонту, против простого правила и климатологии.
 - **Неопределённость:** задержка и ETA — распределения (P10–P90); варианты «что делать» сравниваются на парных сценариях.
 - **Объяснимость и контроль:** факторы за каждой оценкой, карточка модели, источник у каждого числа, воспроизводимый пайплайн обучения — в духе Закона РК «Об ИИ».
-- **Тесты:** 52 unit-теста, покрытие ядра 95% строк, 11 e2e-сценариев в браузере на продакшен-сборке, CI на каждый пуш.
+- **Тесты:** 52 unit-теста, покрытие ядра 95% строк, 11 e2e-сценариев в браузере на продакшен-сборке, CI-воркфлоу GitHub Actions.
 
 ### Статус
 
@@ -282,7 +280,7 @@ Full terms: [LICENSE](./LICENSE).
 
 ### ML және сапа
 
-Модель тек оқиғадан 1, 2 және 3 күн бұрын шын мәнінде қолжетімді болған болжамдарда бағаланады. Нәтижелер — үлестірімдер (P10–P90), әр бағаның факторлары көрсетіледі. 52 unit-тест, ядроның 95% жолдары тестпен қамтылған, 11 e2e-сценарий, әр push-та CI.
+Модель тек оқиғадан 1, 2 және 3 күн бұрын шын мәнінде қолжетімді болған болжамдарда бағаланады. Нәтижелер — үлестірімдер (P10–P90), әр бағаның факторлары көрсетіледі. 52 unit-тест, ядроның 95% жолдары тестпен қамтылған, 11 e2e-сценарий, GitHub Actions CI-воркфлоулары.
 
 ### Зияткерлік меншік
 

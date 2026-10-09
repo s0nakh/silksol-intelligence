@@ -1,0 +1,10 @@
+node_modules
+dist
+.output
+.vinxi
+pnpm-lock.yaml
+package-lock.json
+bun.lock
+routeTree.gen.ts
+# Design tokens and layout styles are frozen; keep them byte-identical.
+src/styles.css

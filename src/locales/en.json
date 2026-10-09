@@ -1,0 +1,316 @@
+{
+  "meta": {
+    "title": "SilkSol Intelligence — Corridor Risk Intelligence",
+    "description": "Predictive delay risk, SLA monitoring and verifiable delay reports for Middle Corridor (TITR) logistics.",
+    "ogDescription": "B2B corridor risk intelligence: ML delay forecasts, SLA monitor and SHA-256 audit trail."
+  },
+  "banner": "Demo environment — shipments, metrics and feeds are simulated unless marked LIVE. Decision-support analytics only; not insurance or financial advice.",
+  "header": {
+    "telemetry": "Corridor telemetry",
+    "aisPorts": "AIS · {n} ports",
+    "model": "Model {version}",
+    "language": "Interface language"
+  },
+  "tags": {
+    "SIMULATED": "SIMULATED",
+    "LIVE": "LIVE",
+    "DEMO DATA": "DEMO DATA",
+    "BASELINE": "BASELINE",
+    "SHA-256": "SHA-256"
+  },
+  "hero": {
+    "eyebrow": "Live operations / Middle Corridor",
+    "title": "Corridor intelligence",
+    "subtitle": "Predictive delay risk across rail, port and Caspian maritime handoffs — backed by a verifiable audit trail.",
+    "replay": "Scenario replay · {time}",
+    "live": "Live feeds · {time}",
+    "lastSync": "Last sync {n} s ago"
+  },
+  "kpi": {
+    "containers": "Monitored containers",
+    "containersDetail": "{n} shipments",
+    "atRisk": "{n} at risk",
+    "riskIndex": "Predictive risk index",
+    "riskDelta": "{delta} pp",
+    "slaViolations": "SLA violations",
+    "slaDetail": "shipments affected: {n}",
+    "predicted": "+{n} predicted",
+    "etaDrift": "Avg ETA drift",
+    "etaDriftDetail": "median vs contract",
+    "p90": "P90 {h}"
+  },
+  "band": {
+    "low": "Low risk",
+    "moderate": "Moderate",
+    "elevated": "Elevated",
+    "high": "High risk"
+  },
+  "tracker": {
+    "eyebrow": "Live route telemetry",
+    "title": "Middle Corridor tracker",
+    "signals": "{n} signals",
+    "routeName": "TRANS-CASPIAN INTERNATIONAL TRANSPORT ROUTE",
+    "noBottleneck": "No active bottlenecks",
+    "bottleneck": "Bottleneck · {node}"
+  },
+  "table": {
+    "title": "Active shipments",
+    "filters": {
+      "all": "All shipments",
+      "in_transit": "In transit",
+      "at_risk": "High delay risk",
+      "sla_breach": "SLA breach"
+    },
+    "cols": {
+      "cargo": "Cargo ID",
+      "route": "Route",
+      "location": "Location",
+      "eta": "Predicted ETA",
+      "status": "Status",
+      "risk": "AI risk",
+      "drift": "ETA drift",
+      "report": "Delay report"
+    },
+    "generate": "Generate report",
+    "issued": "Issued"
+  },
+  "status": {
+    "in_transit": "In transit",
+    "at_risk": "High delay risk",
+    "sla_breach": "SLA breach"
+  },
+  "phase": {
+    "border_crossing": "border crossing",
+    "awaiting_vessel": "awaiting vessel",
+    "at_roadstead": "on roadstead",
+    "rail_transfer": "rail transfer"
+  },
+  "nodes": {
+    "lianyungang": "Lianyungang",
+    "xian": "Xi’an",
+    "almaty": "Almaty",
+    "khorgos": "Khorgos",
+    "aktau": "Aktau Port",
+    "kuryk": "Kuryk Port",
+    "baku": "Baku (Alat)",
+    "tbilisi": "Tbilisi",
+    "poti": "Poti",
+    "istanbul": "Istanbul"
+  },
+  "countries": {
+    "CN": "China",
+    "KZ": "Kazakhstan",
+    "AZ": "Azerbaijan",
+    "GE": "Georgia",
+    "TR": "Turkey"
+  },
+  "commodity": {
+    "electronics": "Electronics",
+    "auto_parts": "Auto parts",
+    "polymers": "Polymers",
+    "textiles": "Textiles"
+  },
+  "sla": {
+    "eyebrow": "SLA violation monitor",
+    "title": "Dwell SLA · #{id}",
+    "risk": "AI risk score",
+    "dwell": "Dwell now",
+    "threshold": "SLA threshold",
+    "note": "Dwell thresholds per checkpoint · delay tolerance {h} h vs quoted ETA",
+    "ok": "Within SLA at {node}: {dwell} of {threshold} h",
+    "warning": "Approaching SLA at {node}: {dwell} of {threshold} h",
+    "breach": "SLA breached at {node}: {dwell} h > {threshold} h",
+    "predictedBreach": "Predicted: ~{predicted} h at {node} vs {threshold} h SLA (P = {p}%)",
+    "predictedOk": "Predicted to clear {node} in ~{remaining} h (breach P = {p}%)",
+    "pastViolations": "Earlier violations on this route: {nodes}"
+  },
+  "model": {
+    "title": "Risk engine",
+    "status": "Baseline coefficients · not yet trained on historical dwell data",
+    "drivers": "Top risk drivers at this node",
+    "features": {
+      "weatherSeverity": "Weather severity",
+      "queueDensity": "Port queue density",
+      "seasonalIndex": "Seasonal dwell index",
+      "railLoad": "Rail network load",
+      "customsHold": "Customs hold",
+      "portClosed": "Port closed"
+    }
+  },
+  "chart": {
+    "eyebrow": "SilkSol prediction engine",
+    "title": "Delay risk · {node} · #{id}",
+    "tooltip": "Delay probability",
+    "alert": "alert",
+    "peak": "Predicted peak: {risk}% at {time}",
+    "recovery": "Recovery expected",
+    "rising": "Risk rising",
+    "stable": "Stable"
+  },
+  "weather": {
+    "eyebrow": "Caspian hydrometeorology",
+    "title": "Port weather · {port}",
+    "wind": "Wind",
+    "waves": "Waves",
+    "port": "Port status",
+    "open": "Open",
+    "closed": "Closed",
+    "alert": "Storm alert",
+    "calm": "Calm",
+    "note": "Ferry and ro-ro operations stop above {n} m/s sustained wind.",
+    "button": "Bottlenecks",
+    "dialogTitle": "Corridor bottlenecks · next {h} h",
+    "dialogDescription": "Delay probability per node from weather, roadstead queues, rail load and seasonality.",
+    "now": "now {risk}%",
+    "peak": "peak {risk}% · {time}"
+  },
+  "reasons": {
+    "storm_closure": "Storm closure: wind {wind} m/s > {threshold} m/s",
+    "storm_forecast": "Storm front in ~{h} h (wind {wind} m/s)",
+    "queue_backlog": "{n} vessels on roadstead, avg wait {h} h",
+    "seasonal_peak": "Seasonal peak: dwell index ×{index}",
+    "rail_load": "Rail network load {pct}%"
+  },
+  "levels": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "telemetry": {
+    "eyebrow": "Marine AIS & dwell feed",
+    "title": "Live vessel telemetry",
+    "queue": "Roadstead queue",
+    "queueValue": "{n} vessels",
+    "avgWait": "avg wait {h} h",
+    "speed": "Speed",
+    "atAnchor": "At anchor",
+    "atTerminal": "At terminal",
+    "dwell": "Dwell time",
+    "overPlan": "+{h} h over plan",
+    "withinPlan": "Within plan"
+  },
+  "proof": {
+    "eyebrow": "Proof of delay",
+    "title": "Verifiable delay report · #{id}",
+    "body": "Cargo #{id} ({location}) has {h} h of dwell above plan, mainly from {cause}. Weather, AIS and dwell events are sealed in a SHA-256 hash chain.",
+    "bodyNoDelay": "Cargo #{id} ({location}) is within its planned dwell. Its weather, AIS and dwell events are still sealed in a SHA-256 hash chain.",
+    "excess": "Excess dwell {h} h",
+    "cause": "Cause: {cause}",
+    "events": "{n} chained events",
+    "ready": "Report ready to issue",
+    "issued": "Report issued",
+    "eventsVerified": "{n} verified events",
+    "evidence": "for forwarders & insurance partners",
+    "head": "Ledger head",
+    "hint": "Generating seals the evidence and appends REPORT_ISSUED to the cargo's audit chain.",
+    "generate": "Generate report",
+    "view": "View report"
+  },
+  "causes": {
+    "weather_closure": "storm port closure",
+    "port_queue": "port queue",
+    "rail_border": "rail border crossing",
+    "terminal_handling": "terminal handling",
+    "none": "none"
+  },
+  "report": {
+    "title": "Passport of delay",
+    "description": "Self-contained, hash-sealed evidence bundle for forwarders and insurance partners.",
+    "id": "Report ID",
+    "issuedAt": "Issued",
+    "hash": "Report SHA-256",
+    "attribution": "Delay attribution",
+    "node": "Node",
+    "cause": "Cause",
+    "hours": "Hours",
+    "total": "Total above plan",
+    "forecast": "Forecast",
+    "risk": "Delay risk",
+    "contractEta": "Contractual ETA",
+    "predictedEta": "Predicted ETA",
+    "band": "P10–P90",
+    "weather": "Weather observations · {port}",
+    "time": "Time",
+    "wind": "Wind, m/s",
+    "wave": "Waves, m",
+    "closed": "Closed",
+    "yes": "yes",
+    "no": "—",
+    "ais": "AIS positions",
+    "vessel": "Vessel",
+    "position": "Position",
+    "speed": "Speed, kn",
+    "queue": "Queue, h",
+    "dwell": "Dwell events",
+    "arrived": "Arrived",
+    "departed": "Departed",
+    "actual": "Actual, h",
+    "planned": "Plan, h",
+    "sla": "SLA, h",
+    "ledger": "Audit chain ({n} events)",
+    "sources": "Sources",
+    "verify": "Verify integrity",
+    "verified": "Integrity verified: report seal, {n} chained events and ledger head all match.",
+    "broken": "Integrity check FAILED — the report or its audit chain was modified.",
+    "download": "Download JSON",
+    "none": "No dwell above plan recorded.",
+    "disclaimer": "Decision-support analytics, not an insurance or legal determination. Simulated feeds are labelled in Sources; the risk model is an uncalibrated baseline.",
+    "toast": "Delay report issued for #{id}"
+  },
+  "audit": {
+    "button": "Audit Trail",
+    "title": "Cryptographic audit trail",
+    "description": "Every cargo event is chained with SHA-256: each entry commits to the previous hash, so any edit, deletion or reordering breaks the chain.",
+    "events": "Events",
+    "chains": "Cargo chains",
+    "integrity": "Integrity",
+    "valid": "Verified",
+    "invalid": "Broken",
+    "root": "Ledger root",
+    "entry": "Cargo #{id} · {node} · #{seq}",
+    "prev": "prev",
+    "verify": "Re-verify all chains",
+    "verifiedToast": "All {n} chains verified",
+    "brokenToast": "Chain broken at #{id}"
+  },
+  "events": {
+    "GATE_IN": "Gate in",
+    "GATE_OUT": "Gate out",
+    "RAIL_DEPARTED": "Rail departure",
+    "RAIL_ARRIVED": "Rail arrival",
+    "VESSEL_ANCHORED": "Vessel anchored on roadstead",
+    "VESSEL_BERTHED": "Vessel berthed",
+    "VESSEL_DEPARTED": "Vessel departed",
+    "STORM_ALERT": "Storm alert",
+    "PORT_CLOSED": "Port closed (weather)",
+    "PORT_REOPENED": "Port reopened",
+    "CUSTOMS_HOLD": "Customs hold",
+    "CUSTOMS_CLEARED": "Customs cleared",
+    "RISK_ASSESSED": "Risk assessed",
+    "SLA_BREACH": "SLA breach",
+    "REPORT_ISSUED": "Delay report issued"
+  },
+  "footer": {
+    "copy": "© 2026 SilkSol Intelligence · Corridor risk intelligence for the Middle Corridor",
+    "ledger": "Ledger root {hash} · {n} events"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist or has been moved.",
+    "home": "Go home",
+    "errorTitle": "This page didn't load",
+    "errorBody": "Something went wrong on our end. You can try refreshing or head back home.",
+    "retry": "Try again"
+  },
+  "units": {
+    "h": "h",
+    "kn": "kn",
+    "ms": "m/s",
+    "m": "m",
+    "kmh": "km/h"
+  },
+  "calendar": {
+    "months": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+    "weekdays": "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
+  }
+}

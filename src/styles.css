@@ -1,0 +1,149 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+}
+
+:root {
+  --radius: 0.375rem;
+  --background: oklch(0.15 0.018 273);
+  --foreground: oklch(0.95 0.008 268);
+  --card: oklch(0.19 0.022 272 / 0.82);
+  --card-foreground: oklch(0.95 0.008 268);
+  --popover: oklch(0.2 0.024 272);
+  --popover-foreground: oklch(0.95 0.008 268);
+  --primary: oklch(0.67 0.25 298);
+  --primary-foreground: oklch(0.98 0.005 270);
+  --secondary: oklch(0.22 0.026 272 / 0.9);
+  --secondary-foreground: oklch(0.91 0.01 270);
+  --muted: oklch(0.24 0.021 272);
+  --muted-foreground: oklch(0.66 0.028 270);
+  --accent: oklch(0.24 0.034 280);
+  --accent-foreground: oklch(0.95 0.008 268);
+  --border: oklch(0.32 0.032 274 / 0.68);
+  --input: oklch(0.3 0.03 274);
+  --ring: oklch(0.67 0.25 298);
+  --success: oklch(0.84 0.18 158);
+  --warning: oklch(0.79 0.16 69);
+  --danger: oklch(0.68 0.22 28);
+  --chart-risk: oklch(0.71 0.23 320);
+  --chart-warning: oklch(0.79 0.16 69);
+  --chart-grid: oklch(0.32 0.03 274 / 0.45);
+  --chart-label: oklch(0.62 0.028 270);
+}
+
+/* Compositor-only pulse (transform + opacity): animating box-shadow repainted every frame. */
+@keyframes route-pulse {
+  0%, 100% { transform: scale(1); opacity: .55; }
+  50% { transform: scale(1.22); opacity: 1; }
+}
+
+@keyframes scan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(420%); }
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  html { background: var(--background); }
+  body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); letter-spacing: 0; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+}
+
+@utility shadow-glow {
+  box-shadow: 0 0 24px color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+@utility text-gradient {
+  background: linear-gradient(110deg, var(--primary), var(--success));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.panel, .metric-card {
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, color-mix(in oklab, var(--card) 94%, var(--primary) 6%), var(--card));
+  /* No backdrop-filter: the page behind panels is a flat colour, so the blur was invisible but costly. */
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 1px color-mix(in oklab, var(--foreground) 4%, transparent), 0 14px 45px oklch(0.06 0.01 270 / 0.24);
+}
+
+.metric-card { padding: 1rem; min-height: 140px; transition: border-color 180ms ease, transform 180ms ease; }
+.metric-card:hover { border-color: color-mix(in oklab, var(--primary) 38%, var(--border)); transform: translateY(-2px); }
+.metric-icon { display: flex; width: 2rem; height: 2rem; align-items: center; justify-content: center; border-radius: var(--radius-md); color: var(--primary); background: color-mix(in oklab, var(--primary) 12%, transparent); border: 1px solid color-mix(in oklab, var(--primary) 20%, transparent); }
+.metric-icon-success { color: var(--success); background: color-mix(in oklab, var(--success) 10%, transparent); border-color: color-mix(in oklab, var(--success) 20%, transparent); }
+
+.solana-mark { width: 27px; height: 24px; display: flex; flex-direction: column; justify-content: space-between; filter: drop-shadow(0 0 7px color-mix(in oklab, var(--primary) 50%, transparent)); }
+.solana-mark span { display: block; height: 5px; border-radius: 1px; transform: skewX(-24deg); background: linear-gradient(90deg, var(--success), var(--primary)); }
+.solana-mark span:nth-child(2) { transform: skewX(24deg); background: linear-gradient(90deg, var(--primary), var(--success)); }
+
+.corridor-map { position: relative; min-height: 290px; overflow: hidden; background: radial-gradient(circle at 65% 50%, color-mix(in oklab, var(--primary) 11%, transparent), transparent 36%), linear-gradient(135deg, color-mix(in oklab, var(--background) 90%, var(--success) 10%), var(--background)); }
+.map-grid { position: absolute; inset: 0; opacity: .34; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to bottom, black, transparent 95%); }
+.route-rail { position: absolute; inset: 72px 5% auto; display: grid; grid-template-columns: repeat(5, 1fr); }
+.route-rail::before { content: ""; position: absolute; top: 17px; left: 9%; right: 9%; height: 2px; background: linear-gradient(90deg, var(--success) 0 43%, var(--primary) 43% 56%, var(--border) 56%); }
+.route-rail::after { content: ""; position: absolute; top: 16px; left: 0; width: 24%; height: 3px; background: linear-gradient(90deg, transparent, var(--success), transparent); animation: scan 3.4s linear infinite; will-change: transform; }
+.route-stop { position: relative; z-index: 2; display: flex; min-width: 0; flex-direction: column; align-items: center; border: 0; background: transparent; color: var(--muted-foreground); font: inherit; cursor: pointer; }
+.route-dot { display: flex; width: 34px; height: 34px; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid var(--border); background: var(--background); font-size: 10px; font-weight: 700; }
+.route-complete .route-dot { border-color: var(--success); background: color-mix(in oklab, var(--success) 15%, var(--background)); color: var(--success); }
+.route-active .route-dot { position: relative; border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 16%, transparent), 0 0 18px color-mix(in oklab, var(--primary) 55%, transparent); }
+.route-active .route-dot::after { content: ""; position: absolute; inset: -6px; border-radius: 999px; box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 14%, transparent), 0 0 22px color-mix(in oklab, var(--primary) 60%, transparent); animation: route-pulse 2s ease-in-out infinite; will-change: transform, opacity; pointer-events: none; }
+.route-city { margin-top: 10px; color: var(--foreground); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.route-country { margin-top: 2px; font-size: 8px; text-transform: uppercase; }
+.map-event { position: absolute; top: 160px; left: 48%; display: flex; gap: .55rem; align-items: flex-start; padding: .65rem .75rem; border: 1px solid color-mix(in oklab, var(--warning) 30%, transparent); border-radius: var(--radius-md); color: var(--warning); background: color-mix(in oklab, var(--background) 90%, var(--warning) 10%); box-shadow: 0 0 25px color-mix(in oklab, var(--warning) 10%, transparent); }
+.map-event div { display: flex; flex-direction: column; }
+.map-event strong { font-size: 10px; }
+.map-event span { margin-top: 2px; color: var(--muted-foreground); font-size: 9px; }
+
+.status-pill { display: inline-flex; align-items: center; gap: .3rem; width: fit-content; white-space: nowrap; border: 1px solid transparent; border-radius: 999px; padding: .25rem .5rem; font-size: 9px; font-weight: 600; }
+.status-transit { border-color: color-mix(in oklab, var(--success) 24%, transparent); background: color-mix(in oklab, var(--success) 9%, transparent); color: var(--success); }
+.status-risk { border-color: color-mix(in oklab, var(--warning) 28%, transparent); background: color-mix(in oklab, var(--warning) 10%, transparent); color: var(--warning); }
+.status-triggered { border-color: color-mix(in oklab, var(--primary) 30%, transparent); background: color-mix(in oklab, var(--primary) 11%, transparent); color: var(--primary); }
+
+table th { padding: .75rem 1rem; font-weight: 600; }
+table td { padding: .8rem 1rem; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 10px; }
+tbody tr { cursor: pointer; transition: background 160ms ease; }
+tbody tr:hover, .table-row-active { background: color-mix(in oklab, var(--accent) 72%, transparent); }
+.table-row-active td:first-child { box-shadow: inset 2px 0 var(--primary); }
+
+.settlement-panel { position: relative; }
+.settlement-panel::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: linear-gradient(var(--primary), var(--success)); box-shadow: 0 0 18px var(--primary); }
+.settlement-result { padding: 1rem; border: 1px solid color-mix(in oklab, var(--success) 20%, var(--border)); border-radius: var(--radius-md); background: color-mix(in oklab, var(--success) 4%, var(--card)); }
+.condition-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .35rem .5rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--secondary); color: var(--muted-foreground); font-size: 9px; }
+
+@media (max-width: 640px) {
+  .corridor-map { min-height: 390px; overflow-x: auto; }
+  .route-rail { inset: 58px auto auto 24px; width: 680px; }
+  .map-event { top: 158px; left: 270px; }
+  .metric-card { min-height: 124px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

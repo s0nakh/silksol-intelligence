@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/logo.svg" alt="SilkSol Intelligence" width="420"/></p>
+<p align="center"><img src="./assets/logo.svg" alt="SilkSol Intelligence" width="360"/></p>
 
 <h1 align="center">SilkSol Intelligence</h1>
 
@@ -9,6 +9,29 @@
 <p align="center">
   <a href="https://silksol-intelligence.datariglab.kz"><b>Live demo</b></a> ·
   <b>English</b> · <a href="#-русский">Русский</a> · <a href="#-қазақша">Қазақша</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/s0nakh/silksol-intelligence/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/s0nakh/silksol-intelligence/actions/workflows/ci.yml/badge.svg"/></a>
+  <a href="https://github.com/s0nakh/silksol-intelligence/actions/workflows/e2e.yml"><img alt="E2E" src="https://github.com/s0nakh/silksol-intelligence/actions/workflows/e2e.yml/badge.svg"/></a>
+  <a href="#-quality--testing"><img alt="Tests: 52 unit, 11 E2E" src="https://img.shields.io/badge/tests-52%20unit%20%C2%B7%2011%20e2e-2ea44f"/></a>
+  <a href="#-quality--testing"><img alt="Core coverage 95% lines" src="https://img.shields.io/badge/core%20coverage-95%25%20lines-2ea44f"/></a>
+  <a href="#-validated-on-real-data"><img alt="Port-closure AUC 0.88–0.89" src="https://img.shields.io/badge/port--closure%20AUC-0.88%E2%80%930.89-2dd4bf"/></a>
+</p>
+
+<p align="center">
+  <a href="https://silksol-intelligence.datariglab.kz"><img alt="Live demo" src="https://img.shields.io/badge/demo-live-8b5cf6?logo=googlechrome&logoColor=white"/></a>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white"/>
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black"/>
+  <img alt="Node.js 22" src="https://img.shields.io/badge/Node.js-22-5FA04E?logo=nodedotjs&logoColor=white"/>
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white"/>
+  <img alt="QazCloud-ready" src="https://img.shields.io/badge/QazCloud-ready-00AFCA"/>
+  <img alt="EN · RU · KK" src="https://img.shields.io/badge/UI-EN%20%C2%B7%20RU%20%C2%B7%20KK-6e40c9"/>
+  <a href="./LICENSE"><img alt="License: proprietary" src="https://img.shields.io/badge/license-proprietary-c0392b"/></a>
+</p>
+
+<p align="center">
+  <a href="https://silksol-intelligence.datariglab.kz"><img src="./public/og-image.png" alt="SilkSol Intelligence — предиктивная аналитика задержек на Среднем коридоре" width="820"/></a>
 </p>
 
 ---
@@ -74,6 +97,33 @@ The port-closure forecast was trained on real weather-station observations at Ak
 | 3 days        | 0.89 | **23%**                              | 0%                                    |
 
 "Closure" is defined by sustained wind ≥ 15 m/s, the ferry stop threshold; harbour-master closure logs from the pilot partner replace this proxy. Dwell-time and ETA components are calibrated on the pilot partner's data — that is the goal of the pilot.
+
+---
+
+## 🧠 ML & Data Science
+
+| Question the model answers                             | Output                                           | Status                                                |
+| ------------------------------------------------------ | ------------------------------------------------ | ----------------------------------------------------- |
+| Will this shipment miss its contractual ETA?           | Probability + P10–P90 ETA, risk drivers          | Working; calibrated on the pilot partner's dwell data |
+| Will the port close for storms in the next 1–3 days?   | Daily closure probability + warning              | **Trained and validated on real data**                |
+| What does the delay cost, and which action saves most? | Expected loss in ₸, options ranked by net saving | Working (demo tariffs)                                |
+
+- **Data.** Hourly weather-station observations at Aktau and Baku (2010–2025), archived numerical weather forecasts, vessel positions (AIS), rail and port events (CMR / SMGS, gate-in / gate-out).
+- **Validation without leakage.** Strict out-of-time split; the model is scored only on forecasts that were actually available 1, 2 and 3 days before the event; every lead time is reported separately against a simple-rule baseline and against climatology (Brier skill).
+- **Uncertainty, not point guesses.** Delay and ETA come as distributions (P10–P90) from scenario simulation; what-if options are compared on paired scenarios, so the difference reflects the action, not noise.
+- **Explainable and governed.** Factor contributions behind every score, a model card with what is calibrated and what is not, data provenance on every number, versioned calibration artefacts and a reproducible training pipeline — in line with the Law of RK "On Artificial Intelligence".
+- **MLOps in QazCloud (pilot).** Retraining on the partner's history on QazCloud GPUs, drift and calibration monitoring, champion / challenger releases, and a local LLM for the Russian / Kazakh dispatcher assistant — data never leaves Kazakhstan.
+
+---
+
+## 🧪 Quality & testing
+
+| Layer                       | What is checked                                                                                                                             | Result                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Unit & integration (Vitest) | Forecasting engine, port-closure model, cost of delay and recommendations, SLA, audit trail, delay reports, REST API, translations          | **52 tests**, all passing                                     |
+| Coverage of the core        | Services and API                                                                                                                            | **95% lines** · 93% statements · 94% functions · 80% branches |
+| End-to-end (Playwright)     | Real browser against the production build: dashboard, risk chart, SLA monitor, delay report issue & verification, audit trail, EN → RU → KK | **11 scenarios**, all passing                                 |
+| CI (GitHub Actions)         | Typecheck, lint, unit tests with coverage, production build; E2E suite                                                                      | On every push to `main`                                       |
 
 ---
 
@@ -186,6 +236,13 @@ Full terms: [LICENSE](./LICENSE).
 
 Прогноз закрытия портов обучен на наблюдениях метеостанций Актау и Баку и проверен на прогнозах за 1–3 дня (март 2024 – декабрь 2025, 1 304 порто-дня, 53 штормовых дня): **AUC 0,88–0,89**, за сутки модель заранее предупреждает о **36%** штормовых закрытий, простое пороговое правило «ветер > 15 м/с» — о 2%. Модели простоя и ETA калибруются на данных пилотного партнёра.
 
+### ML и качество
+
+- **Без утечки будущего:** модель оценивается только на прогнозах, которые реально были доступны за 1, 2 и 3 дня до события, отдельно по каждому горизонту, против простого правила и климатологии.
+- **Неопределённость:** задержка и ETA — распределения (P10–P90); варианты «что делать» сравниваются на парных сценариях.
+- **Объяснимость и контроль:** факторы за каждой оценкой, карточка модели, источник у каждого числа, воспроизводимый пайплайн обучения — в духе Закона РК «Об ИИ».
+- **Тесты:** 52 unit-теста, покрытие ядра 95% строк, 11 e2e-сценариев в браузере на продакшен-сборке, CI на каждый пуш.
+
 ### Статус
 
 Работают: дашборд (RU/KZ/EN), риск и ETA, монитор SLA, прогноз закрытия портов, стоимость задержки и рекомендации (на демо-тарифах), паспорт задержки, REST API, Docker. Следующие этапы: пилот Актау – Баку на данных партнёра, ИИ-ассистент диспетчера на русском и казахском на локальной LLM в QazCloud, SSO и интеграция с ERP/1С.
@@ -222,6 +279,10 @@ Full terms: [LICENSE](./LICENSE).
 ### Нақты деректермен тексеру
 
 Порттың жабылу болжамы Ақтау мен Баку метеостанцияларының бақылауларында оқытылып, 1–3 күн бұрынғы болжамдарда тексерілді (2024 ж. наурыз – 2025 ж. желтоқсан): **AUC 0,88–0,89**. Тұрып қалу және ETA модельдері пилоттық серіктестің деректерінде калибрленеді.
+
+### ML және сапа
+
+Модель тек оқиғадан 1, 2 және 3 күн бұрын шын мәнінде қолжетімді болған болжамдарда бағаланады. Нәтижелер — үлестірімдер (P10–P90), әр бағаның факторлары көрсетіледі. 52 unit-тест, ядроның 95% жолдары тестпен қамтылған, 11 e2e-сценарий, әр push-та CI.
 
 ### Зияткерлік меншік
 

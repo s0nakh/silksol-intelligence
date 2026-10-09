@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Coverage summary
+        if: ${{ !cancelled() }}
+        run: |
+          node -e "const c=require('./coverage/coverage-summary.json').total; console.log('### Coverage\n\n| Lines | Statements | Functions | Branches |\n|---|---|---|---|\n| '+[c.lines,c.statements,c.functions,c.branches].map(x=>x.pct+'%').join(' | ')+' |')" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Production build (Node server)
+        run: npm run build:node

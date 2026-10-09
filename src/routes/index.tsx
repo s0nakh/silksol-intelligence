@@ -65,6 +65,11 @@ import {
   type Shipment,
 } from "@/services/telemetry";
 
+const SITE_URL = "https://silksol-intelligence.datariglab.kz";
+// ?v=1 lets messengers re-fetch the preview when the image changes.
+const OG_IMAGE = `${SITE_URL}/og-image.png?v=1`;
+const OG_IMAGE_ALT = "SilkSol Intelligence — предиктивная аналитика задержек на Среднем коридоре";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -73,7 +78,16 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: translate("en", "meta.title") },
       { property: "og:description", content: translate("en", "meta.ogDescription") },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "SilkSol Intelligence" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: OG_IMAGE_ALT },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: translate("en", "meta.title") },
+      { name: "twitter:description", content: translate("en", "meta.ogDescription") },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
   }),
   component: Dashboard,

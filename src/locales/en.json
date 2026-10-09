@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "SilkSol Intelligence — Corridor Risk Intelligence",
-    "description": "Predictive delay risk, SLA monitoring and verifiable delay reports for Middle Corridor (TITR) logistics.",
-    "ogDescription": "B2B corridor risk intelligence: ML delay forecasts, SLA monitor and SHA-256 audit trail."
+    "description": "AI decision support for Middle Corridor logistics: shipment delay risk and P10–P90 ETA, Caspian port-closure forecasts trained on real data, cost of delay in tenge and the actions that save most.",
+    "ogDescription": "Know which shipment will be late, what it will cost in tenge and what to do — port-closure forecasts trained on real data (AUC 0.88)."
   },
   "banner": "Demo environment — shipments, metrics and feeds are simulated unless marked LIVE. Decision-support analytics only; not insurance or financial advice.",
   "header": {

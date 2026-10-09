@@ -51,3 +51,6 @@ dist-ssr
 
 # Raw downloaded datasets (re-create with scripts/data/fetch-caspian.mjs)
 /data/raw/
+
+# Test coverage reports
+/coverage/

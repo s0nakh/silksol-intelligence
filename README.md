@@ -116,12 +116,12 @@ The port-closure forecast was trained on real weather-station observations at Ak
 
 ## 🧪 Quality & testing
 
-| Layer                       | What is checked                                                                                                                             | Result                                                        |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Unit & integration (Vitest) | Forecasting engine, port-closure model, cost of delay and recommendations, SLA, audit trail, delay reports, REST API, translations          | **52 tests**, all passing                                     |
-| Coverage of the core        | Services and API                                                                                                                            | **95% lines** · 93% statements · 94% functions · 80% branches |
-| End-to-end (Playwright)     | Real browser against the production build: dashboard, risk chart, SLA monitor, delay report issue & verification, audit trail, EN → RU → KK | **11 scenarios**, all passing                                 |
-| CI (GitHub Actions)         | Typecheck, lint, unit tests with coverage, production build; E2E suite                                                                      | Workflows in `.github/workflows`, triggered on push to `main` |
+| Layer                       | What is checked                                                                                                                                        | Result                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Unit & integration (Vitest) | Forecasting engine, port-closure model, cost of delay and recommendations, SLA, audit trail, delay reports, REST API, translations                     | **52 tests**, all passing                                     |
+| Coverage of the core        | Calculation core and REST API (forecasting, port-closure model, economics, SLA, audit trail, reports); UI screens are covered by the E2E suite instead | **95% lines** · 93% statements · 94% functions · 80% branches |
+| End-to-end (Playwright)     | Real browser against the production build: dashboard, risk chart, SLA monitor, delay report issue & verification, audit trail, EN → RU → KK            | **11 scenarios**, all passing                                 |
+| CI (GitHub Actions)         | Typecheck, lint, unit tests with coverage, production build; E2E suite                                                                                 | Workflows in `.github/workflows`, triggered on push to `main` |
 
 ---
 
@@ -239,7 +239,7 @@ Full terms: [LICENSE](./LICENSE).
 - **Без утечки будущего:** модель оценивается только на прогнозах, которые реально были доступны за 1, 2 и 3 дня до события, отдельно по каждому горизонту, против простого правила и климатологии.
 - **Неопределённость:** задержка и ETA — распределения (P10–P90); варианты «что делать» сравниваются на парных сценариях.
 - **Объяснимость и контроль:** факторы за каждой оценкой, карточка модели, источник у каждого числа, воспроизводимый пайплайн обучения — в духе Закона РК «Об ИИ».
-- **Тесты:** 52 unit-теста, покрытие ядра 95% строк, 11 e2e-сценариев в браузере на продакшен-сборке, CI-воркфлоу GitHub Actions.
+- **Тесты:** 52 unit-теста, покрытие ядра расчётов и API 95% строк (экраны проверяются e2e-тестами), 11 e2e-сценариев в браузере на продакшен-сборке, CI-воркфлоу GitHub Actions.
 
 ### Статус
 

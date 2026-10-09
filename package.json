@@ -1,6 +1,7 @@
 {
   "name": "silksol-intelligence",
   "private": true,
+  "license": "UNLICENSED",
   "sideEffects": false,
   "type": "module",
   "scripts": {

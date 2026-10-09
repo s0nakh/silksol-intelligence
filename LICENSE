@@ -1,0 +1,39 @@
+SilkSol Intelligence — Proprietary License
+
+Copyright (c) 2026 SilkSol / s0nakh. All rights reserved.
+
+1. Ownership. This repository and everything in it — source code, models and model
+   parameters, calibration and evaluation methods, data processing pipelines, tariff and
+   recommendation logic, documentation, user interface, texts, the "SilkSol" and
+   "SilkSol Intelligence" names and logos (the "Software") — is the exclusive property of
+   the copyright holder and is protected by the Law of the Republic of Kazakhstan
+   "On Copyright and Related Rights", the Civil Code of the Republic of Kazakhstan and
+   international copyright treaties.
+
+2. No license. The Software is published for evaluation only. No license or other right
+   is granted, expressly or by implication, except where a separate written agreement
+   signed by the copyright holder says otherwise.
+
+3. Prohibited without prior written permission:
+   a) copying, reproducing or distributing the Software or any part of it;
+   b) modifying it, translating it or creating derivative works from it;
+   c) deploying, hosting, running or offering it as a service, or using it in production;
+   d) selling, sublicensing, renting or otherwise transferring it;
+   e) using the Software, its models, parameters, methods or documentation to build,
+      train, fine-tune or benchmark other software or AI systems;
+   f) removing or altering copyright notices.
+
+4. GitHub. Viewing and forking this repository on github.com to the extent GitHub's Terms
+   of Service require for public repositories does not grant any right to use, copy,
+   modify or distribute the Software beyond that.
+
+5. Third-party components. Open-source dependencies installed via package managers remain
+   under their own licenses. Third-party data referenced by the Software is subject to its
+   providers' terms.
+
+6. No warranty. The Software is provided "as is", without warranty of any kind. It is
+   decision-support analytics and not an insurance, legal or financial determination.
+
+7. Enforcement. Infringements are pursued under the laws of the Republic of Kazakhstan.
+
+Licensing, pilot and partnership requests: sophia.akhmetova@datariglab.kz

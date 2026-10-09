@@ -14,9 +14,9 @@ import {
   type ShipmentStatus,
 } from "@/services/sla/slaMonitor";
 import {
-  DEMO_EPOCH,
   loadSnapshot,
   mockSnapshot,
+  scenarioEpoch,
   type CorridorSnapshot,
   type TelemetryConfig,
 } from "@/services/telemetry";
@@ -27,6 +27,8 @@ import { HOUR_MS } from "@/services/telemetry/prng";
 // deployment keeps ledgers and issued reports in PostgreSQL so several replicas can share them.
 
 export const API_REFRESH_MS = 15_000;
+/** The scripted scenario is re-anchored to the current hour once it is this old. */
+export const SCENARIO_MAX_AGE_H = 24;
 
 export type CorridorState = {
   snapshot: CorridorSnapshot;
@@ -42,19 +44,16 @@ export type CorridorState = {
 export class CorridorService {
   private state: CorridorState | undefined;
   private pending: Promise<CorridorState> | undefined;
-  private readonly startedAt: number;
-  private readonly epoch: Date;
+  private epoch: Date;
   private readonly live: boolean;
 
   constructor(
     private readonly config: TelemetryConfig,
     private readonly clock: () => number = Date.now,
   ) {
-    this.startedAt = clock();
     this.live = config.weatherMode === "live" || config.aisMode === "live";
-    // Mock mode replays the scripted scenario from DEMO_EPOCH, like the dashboard; live mode
-    // anchors it at the hour the service started.
-    this.epoch = this.live ? new Date(Math.floor(this.startedAt / HOUR_MS) * HOUR_MS) : DEMO_EPOCH;
+    // Like the dashboard, the scenario is anchored at the current hour so dates are today's.
+    this.epoch = scenarioEpoch(clock());
   }
 
   get isLive() {
@@ -68,9 +67,12 @@ export class CorridorService {
   }
 
   private async refresh(): Promise<CorridorState> {
-    const now = this.live
-      ? new Date(this.clock())
-      : new Date(this.epoch.getTime() + (this.clock() - this.startedAt));
+    const now = new Date(this.clock());
+    if (now.getTime() - this.epoch.getTime() > SCENARIO_MAX_AGE_H * HOUR_MS) {
+      // A new scenario day: fresh audit chains, previously issued reports belong to the old one.
+      this.epoch = scenarioEpoch(now.getTime());
+      this.state = undefined;
+    }
     const snapshot = this.live
       ? await loadSnapshot(this.config, this.epoch, now)
       : mockSnapshot(this.epoch, now);

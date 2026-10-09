@@ -20,28 +20,30 @@ import {
   type ShipmentStatus,
 } from "@/services/sla/slaMonitor";
 import {
-  DEMO_EPOCH,
   loadSnapshot,
   mockSnapshot,
+  scenarioEpoch,
   telemetryConfigFromEnv,
   type CorridorSnapshot,
 } from "@/services/telemetry";
-import { HOUR_MS } from "@/services/telemetry/prng";
 
 export const REFRESH_MS = 15_000;
 
 const config = telemetryConfigFromEnv(import.meta.env as Record<string, string | undefined>);
 export const LIVE_FEEDS = config.weatherMode === "live" || config.aisMode === "live";
 
-const initialSnapshot = () => mockSnapshot(DEMO_EPOCH, DEMO_EPOCH);
+const initialSnapshot = () => {
+  const epoch = scenarioEpoch();
+  return mockSnapshot(epoch, epoch);
+};
 
 /**
  * Corridor state for the dashboard: telemetry snapshot (refreshed every 15 s), ML forecast,
  * SLA evaluation, per-cargo audit chains and issued delay reports.
  *
- * Mock mode replays the scripted scenario from DEMO_EPOCH with the real elapsed time, so the
- * server render and hydration agree and every visitor sees the same storm. Live mode anchors the
- * scenario at the current hour and pulls configured feeds.
+ * The scenario is anchored at the start of the current hour, so dates are today's: mock mode
+ * replays the scripted storm from that hour (every visitor sees the same storm), live mode pulls
+ * the configured feeds.
  */
 export function useCorridorIntel() {
   const [snapshot, setSnapshot] = useState<CorridorSnapshot>(initialSnapshot);
@@ -65,11 +67,10 @@ export function useCorridorIntel() {
   }, [snapshot, forecast]);
 
   useEffect(() => {
-    const loadedAt = Date.now();
-    const epoch = LIVE_FEEDS ? new Date(Math.floor(loadedAt / HOUR_MS) * HOUR_MS) : DEMO_EPOCH;
+    const epoch = scenarioEpoch();
     let active = true;
     const refresh = async () => {
-      const now = LIVE_FEEDS ? new Date() : new Date(epoch.getTime() + (Date.now() - loadedAt));
+      const now = new Date();
       const next = LIVE_FEEDS ? await loadSnapshot(config, epoch, now) : mockSnapshot(epoch, now);
       if (!active) return;
       setSnapshot(next);

@@ -1,5 +1,6 @@
 import { mockAis, fetchLiveAis, type AisSnapshot } from "./ais";
 import { buildDwellTimeline, SHIPMENTS, type DwellTimeline, type Shipment } from "./railPortDwell";
+import { HOUR_MS } from "./prng";
 import { fetchLiveCaspianWeather, mockCaspianWeather, type CaspianWeather } from "./weather";
 
 export * from "./corridor";
@@ -19,8 +20,14 @@ export type CorridorSnapshot = {
   timelines: Record<string, DwellTimeline>;
 };
 
-/** Fixed epoch for server rendering and first paint, so SSR and hydration agree. */
+/** Fixed epoch for deterministic tests. */
 export const DEMO_EPOCH = new Date("2026-10-02T06:00:00Z");
+
+/**
+ * Scenario anchor: the start of the current hour. The scripted demo scenario (and live feeds)
+ * unfold around today's date; the same hour on server and client keeps SSR and hydration in step.
+ */
+export const scenarioEpoch = (now = Date.now()) => new Date(Math.floor(now / HOUR_MS) * HOUR_MS);
 
 export function mockSnapshot(epoch: Date = DEMO_EPOCH, now: Date = epoch): CorridorSnapshot {
   const weather = mockCaspianWeather(epoch, now);

@@ -328,169 +328,168 @@ function Dashboard() {
         </section>
 
         <section className="mt-4 grid gap-4 xl:grid-cols-[1.65fr_1fr]">
-          <div className="panel min-w-0 overflow-hidden">
-            <PanelHeader
-              icon={MapPin}
-              eyebrow={t("tracker.eyebrow")}
-              title={t("tracker.title")}
-              aside={
-                <span className="flex items-center gap-2">
-                  <DemoTag kind="DEMO DATA" />
-                  <span className="status-pill status-transit">
-                    <Activity className="size-3" /> {t("tracker.signals", { n: signals })}
-                  </span>
-                </span>
-              }
-            />
-            <div className="corridor-map">
-              <div className="map-grid" />
-              <div className="route-rail">
-                {TRACKER_ROUTE.map((node, index) => {
-                  const state = TRACKER_STATES[index]!;
-                  return (
-                    <button
-                      key={node}
-                      onClick={() => {
-                        const hit = shipments.find(
-                          (s) => trackerColumn(s.route[s.currentIndex]!) === index,
-                        );
-                        if (hit) setSelectedId(hit.id);
-                      }}
-                      className={`route-stop route-${state}`}
-                      aria-label={`${nodeName(i18n, node)}, ${state}`}
-                    >
-                      <span className="route-dot">
-                        {state === "complete" ? <Check className="size-3" /> : index + 1}
-                      </span>
-                      <span className="route-city">{nodeName(i18n, node)}</span>
-                      <span className="route-country">{countryName(i18n, node)}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="map-event">
-                <TriangleAlert className="size-4" />
-                {topBottleneck ? (
-                  <div>
-                    <strong>
-                      {t("tracker.bottleneck", { node: nodeName(i18n, topBottleneck.node) })} ·{" "}
-                      {topBottleneck.riskNow}%
-                    </strong>
-                    <span>
-                      {topBottleneck.reasons[0]
-                        ? reasonText(i18n, topBottleneck.reasons[0])
-                        : t(`levels.${topBottleneck.level}`)}
+          <div className="grid min-w-0 content-start gap-4">
+            <div className="panel min-w-0 overflow-hidden">
+              <PanelHeader
+                icon={MapPin}
+                eyebrow={t("tracker.eyebrow")}
+                title={t("tracker.title")}
+                aside={
+                  <span className="flex items-center gap-2">
+                    <DemoTag kind="DEMO DATA" />
+                    <span className="status-pill status-transit">
+                      <Activity className="size-3" /> {t("tracker.signals", { n: signals })}
                     </span>
-                  </div>
-                ) : (
-                  <div>
-                    <strong>{t("tracker.noBottleneck")}</strong>
-                  </div>
-                )}
-              </div>
-              <div className="absolute bottom-4 left-5 flex items-center gap-2 text-[10px] text-muted-foreground">
-                <Waves className="size-3.5 text-primary" /> {t("tracker.routeName")}
-              </div>
-            </div>
-
-            <div className="border-t border-border">
-              <div className="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center">
-                <h3 className="text-sm font-semibold">{t("table.title")}</h3>
-                <div className="flex gap-1 overflow-x-auto sm:ml-auto">
-                  {FILTERS.map((item) => (
-                    <Button
-                      key={item}
-                      variant="ghost"
-                      onClick={() => setFilter(item)}
-                      className={`whitespace-nowrap px-2.5 py-1.5 text-[11px] ${filter === item ? "bg-accent text-foreground" : ""}`}
-                    >
-                      {t(`table.filters.${item}`)}
-                    </Button>
-                  ))}
+                  </span>
+                }
+              />
+              <div className="corridor-map">
+                <div className="map-grid" />
+                <div className="route-rail">
+                  {TRACKER_ROUTE.map((node, index) => {
+                    const state = TRACKER_STATES[index]!;
+                    return (
+                      <button
+                        key={node}
+                        onClick={() => {
+                          const hit = shipments.find(
+                            (s) => trackerColumn(s.route[s.currentIndex]!) === index,
+                          );
+                          if (hit) setSelectedId(hit.id);
+                        }}
+                        className={`route-stop route-${state}`}
+                        aria-label={`${nodeName(i18n, node)}, ${state}`}
+                      >
+                        <span className="route-dot">
+                          {state === "complete" ? <Check className="size-3" /> : index + 1}
+                        </span>
+                        <span className="route-city">{nodeName(i18n, node)}</span>
+                        <span className="route-country">{countryName(i18n, node)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="map-event">
+                  <TriangleAlert className="size-4" />
+                  {topBottleneck ? (
+                    <div>
+                      <strong>
+                        {t("tracker.bottleneck", { node: nodeName(i18n, topBottleneck.node) })} ·{" "}
+                        {topBottleneck.riskNow}%
+                      </strong>
+                      <span>
+                        {topBottleneck.reasons[0]
+                          ? reasonText(i18n, topBottleneck.reasons[0])
+                          : t(`levels.${topBottleneck.level}`)}
+                      </span>
+                    </div>
+                  ) : (
+                    <div>
+                      <strong>{t("tracker.noBottleneck")}</strong>
+                    </div>
+                  )}
+                </div>
+                <div className="absolute bottom-4 left-5 flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <Waves className="size-3.5 text-primary" /> {t("tracker.routeName")}
                 </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[720px] text-left" data-testid="shipments-table">
-                  <thead>
-                    <tr className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                      <th>{t("table.cols.cargo")}</th>
-                      <th>{t("table.cols.route")}</th>
-                      <th>{t("table.cols.location")}</th>
-                      <th>{t("table.cols.eta")}</th>
-                      <th>{t("table.cols.status")}</th>
-                      <th>{t("table.cols.risk")}</th>
-                      <th>{t("table.cols.drift")}</th>
-                      <th>{t("table.cols.report")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {visible.map((s) => {
-                      const f = forecast.shipments[s.id]!;
-                      const status = statuses[s.id]!;
-                      return (
-                        <tr
-                          key={s.id}
-                          onClick={() => setSelectedId(s.id)}
-                          className={selected.id === s.id ? "table-row-active" : ""}
-                        >
-                          <td className="whitespace-nowrap font-semibold text-foreground">
-                            #{s.id}
-                          </td>
-                          <td>
-                            <span className="text-foreground">{nodeName(i18n, s.route[0]!)}</span>
-                            <ChevronRight className="mx-1 inline size-3" />
-                            {nodeName(i18n, s.route.at(-1)!)}
-                          </td>
-                          <td>{location(s)}</td>
-                          <td className="whitespace-nowrap">{dateTime(f.predictedEta)}</td>
-                          <td>
-                            <span className={`status-pill ${statusClass[status]}`}>
-                              {t(`status.${status}`)}
-                            </span>
-                          </td>
-                          <td>
-                            <span
-                              className={
-                                f.risk > 60
-                                  ? "font-semibold text-warning"
-                                  : "font-semibold text-success"
-                              }
-                            >
-                              {f.risk}%
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap">
-                            {hours(f.etaDriftH, { signed: true, digits: 0 })}
-                          </td>
-                          <td>
-                            {reports[s.id] ? (
-                              <span className="text-[11px] text-primary">{t("table.issued")}</span>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                className="h-7 whitespace-nowrap px-2 text-[11px]"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  generateReport(s.id);
-                                }}
+
+              <div className="border-t border-border">
+                <div className="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center">
+                  <h3 className="text-sm font-semibold">{t("table.title")}</h3>
+                  <div className="flex gap-1 overflow-x-auto sm:ml-auto">
+                    {FILTERS.map((item) => (
+                      <Button
+                        key={item}
+                        variant="ghost"
+                        onClick={() => setFilter(item)}
+                        className={`whitespace-nowrap px-2.5 py-1.5 text-[11px] ${filter === item ? "bg-accent text-foreground" : ""}`}
+                      >
+                        {t(`table.filters.${item}`)}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[720px] text-left" data-testid="shipments-table">
+                    <thead>
+                      <tr className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                        <th>{t("table.cols.cargo")}</th>
+                        <th>{t("table.cols.route")}</th>
+                        <th>{t("table.cols.location")}</th>
+                        <th>{t("table.cols.eta")}</th>
+                        <th>{t("table.cols.status")}</th>
+                        <th>{t("table.cols.risk")}</th>
+                        <th>{t("table.cols.drift")}</th>
+                        <th>{t("table.cols.report")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visible.map((s) => {
+                        const f = forecast.shipments[s.id]!;
+                        const status = statuses[s.id]!;
+                        return (
+                          <tr
+                            key={s.id}
+                            onClick={() => setSelectedId(s.id)}
+                            className={selected.id === s.id ? "table-row-active" : ""}
+                          >
+                            <td className="whitespace-nowrap font-semibold text-foreground">
+                              #{s.id}
+                            </td>
+                            <td>
+                              <span className="text-foreground">{nodeName(i18n, s.route[0]!)}</span>
+                              <ChevronRight className="mx-1 inline size-3" />
+                              {nodeName(i18n, s.route.at(-1)!)}
+                            </td>
+                            <td>{location(s)}</td>
+                            <td className="whitespace-nowrap">{dateTime(f.predictedEta)}</td>
+                            <td>
+                              <span className={`status-pill ${statusClass[status]}`}>
+                                {t(`status.${status}`)}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={
+                                  f.risk > 60
+                                    ? "font-semibold text-warning"
+                                    : "font-semibold text-success"
+                                }
                               >
-                                {t("table.generate")}
-                              </Button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                                {f.risk}%
+                              </span>
+                            </td>
+                            <td className="whitespace-nowrap">
+                              {hours(f.etaDriftH, { signed: true, digits: 0 })}
+                            </td>
+                            <td>
+                              {reports[s.id] ? (
+                                <span className="text-[11px] text-primary">
+                                  {t("table.issued")}
+                                </span>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  className="h-7 whitespace-nowrap px-2 text-[11px]"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    generateReport(s.id);
+                                  }}
+                                >
+                                  {t("table.generate")}
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="grid min-w-0 gap-4">
-            <SlaMonitor shipment={selected} forecast={selForecast} sla={selSla} />
-            <EconomicsPanel economics={intel.economics[selected.id]!} />
             <div className="panel overflow-hidden">
               <PanelHeader
                 icon={Sparkles}
@@ -581,13 +580,6 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-
-            <WeatherPanel
-              weather={snapshot.weather[port]}
-              outlook={forecast.closureOutlook[port]}
-              bottlenecks={forecast.bottlenecks}
-            />
-
             <div className="panel">
               <PanelHeader
                 icon={Ship}
@@ -628,6 +620,16 @@ function Dashboard() {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="grid min-w-0 content-start gap-4">
+            <SlaMonitor shipment={selected} forecast={selForecast} sla={selSla} />
+            <EconomicsPanel economics={intel.economics[selected.id]!} />
+            <WeatherPanel
+              weather={snapshot.weather[port]}
+              outlook={forecast.closureOutlook[port]}
+              bottlenecks={forecast.bottlenecks}
+            />
           </div>
         </section>
 

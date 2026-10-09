@@ -98,7 +98,7 @@ test.describe("ML risk engine & SLA monitor", () => {
       /Predicted: ~\d+ h at Aktau Port vs 48 h SLA/,
     );
     const model = panel.getByTestId("model-card");
-    await expect(model).toContainText("0.1.0-baseline");
+    await expect(model).toContainText("0.2.0");
     await expect(model).toContainText("Weather severity");
   });
 

@@ -1,0 +1,14 @@
+gantt
+  title Pilot on Aktau – Baku (3 months)
+  dateFormat YYYY-MM-DD
+  axisFormat %b %Y
+  tickInterval 1month
+  section Month 1 · Data
+  Deploy in QazCloud, SSO, access          :m1a, 2026-12-01, 14d
+  Load 1–2 years of dwell & closure history :m1b, after m1a, 16d
+  section Month 2 · Models
+  Train dwell & ETA models on partner data  :m2a, after m1b, 20d
+  Plug in contract tariffs, back-test       :m2b, after m2a, 10d
+  section Month 3 · Live
+  Shadow mode next to dispatchers           :m3a, after m2b, 20d
+  Results report & scale-up decision        :m3b, after m3a, 10d

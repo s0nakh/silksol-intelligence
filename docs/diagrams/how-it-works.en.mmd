@@ -1,0 +1,23 @@
+flowchart LR
+  subgraph D["1 · Data"]
+    W["Caspian weather<br/>forecasts + station history"]
+    A["Vessel positions (AIS)<br/>roadstead queues"]
+    R["Rail & port events<br/>CMR / SMGS, gate-in/out"]
+  end
+  subgraph E["2 · SilkSol AI engine"]
+    P["Delay & port-closure<br/>forecasts"]
+    C["Cost of delay<br/>in ₸ per shipment"]
+    O["What-if options<br/>ranked by net saving"]
+  end
+  subgraph U["3 · Decisions"]
+    DSP["Dispatcher dashboard<br/>EN / RU / KK"]
+    API["REST API →<br/>ERP / 1C / TMS"]
+    PASS["Passport of Delay<br/>tamper-evident evidence"]
+  end
+  W --> P
+  A --> P
+  R --> P
+  P --> C --> O
+  O --> DSP
+  O --> API
+  P --> PASS

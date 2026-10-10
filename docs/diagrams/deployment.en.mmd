@@ -1,0 +1,11 @@
+flowchart TB
+  users["Dispatchers · analysts"] -->|"SSO · customer IdP"| lb
+  erp["Partner ERP / 1C / TMS"] -->|"API keys"| lb
+  subgraph qc["QazCloud — data stays in Kazakhstan"]
+    lb["Load balancer · TLS · WAF"] --> app["SilkSol containers<br/>dashboard + REST API"]
+    app --> db[("PostgreSQL<br/>audit trail · reports")]
+    app --> obj[("Object storage<br/>datasets · exports")]
+    gpu["GPU pool<br/>model training · AI assistant"] --> app
+    etl["ETL gateway<br/>rail & port events · AIS · Kazhydromet"] --> db
+  end
+  app -->|"JSON access logs"| siem["Customer SIEM"]

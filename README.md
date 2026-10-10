@@ -62,6 +62,14 @@ It sells **analytics and decision support** — no payments, custody, tokens or 
 
 ## ⚙️ How it works
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/how-it-works.en.light.png">
+  <img alt="How SilkSol Intelligence works: data → AI engine → decisions" src="docs/diagrams/how-it-works.en.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Interactive diagram (zoom &amp; pan)</summary>
+
 ```mermaid
 flowchart LR
   subgraph D["1 · Data"]
@@ -87,6 +95,8 @@ flowchart LR
   O --> API
   P --> PASS
 ```
+
+</details>
 
 Every number on screen carries its source and a `SIMULATED` / `LIVE` label, and every risk score comes with the factors that drive it — as the Law of the Republic of Kazakhstan "On Artificial Intelligence" expects.
 
@@ -155,6 +165,14 @@ The demo runs a simulated corridor scenario (clearly labelled); tariffs in the c
 
 A 3-month pilot on the **Aktau – Baku** route with a rail or port operator, run on QazCloud.
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/pilot-plan.en.light.png">
+  <img alt="Pilot plan on Aktau – Baku, 3 months" src="docs/diagrams/pilot-plan.en.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Interactive diagram (zoom &amp; pan)</summary>
+
 ```mermaid
 gantt
   title Pilot on Aktau – Baku (3 months)
@@ -172,6 +190,8 @@ gantt
   Results report & scale-up decision        :m3b, after m3a, 10d
 ```
 
+</details>
+
 | KPI                              | How it is measured                                                                               | Target                                           |
 | -------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
 | ETA accuracy                     | Error of the predicted arrival vs. actual, compared with the partner's current planning          | Better than the current plan, agreed at kick-off |
@@ -186,6 +206,14 @@ gantt
 
 ## ☁️ Deployment in QazCloud
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/deployment.en.light.png">
+  <img alt="Deployment in QazCloud" src="docs/diagrams/deployment.en.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Interactive diagram (zoom &amp; pan)</summary>
+
 ```mermaid
 flowchart TB
   users["Dispatchers · analysts"] -->|"SSO · customer IdP"| lb
@@ -199,6 +227,8 @@ flowchart TB
   end
   app -->|"JSON access logs"| siem["Customer SIEM"]
 ```
+
+</details>
 
 - One container (dashboard + API), non-root, read-only file system, health check.
 - All data, backups and personal data stay in Kazakhstan; deployment in the customer's perimeter.
@@ -235,6 +265,14 @@ flowchart TB
 
 ## 💼 Business model
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/business-model.en.light.png">
+  <img alt="Business model: who pays and how" src="docs/diagrams/business-model.en.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Interactive diagram (zoom &amp; pan)</summary>
+
 ```mermaid
 flowchart LR
   subgraph who["Who pays"]
@@ -252,6 +290,8 @@ flowchart LR
   ops --> p
   i --> a
 ```
+
+</details>
 
 The price is justified by the money the platform saves: avoided demurrage, wagon idle and SLA penalties — shown per shipment in tenge.
 
@@ -310,6 +350,14 @@ SilkSol Intelligence превращает это в цифры, по котор�
 
 ### ⚙️ Как это работает
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/how-it-works.ru.light.png">
+  <img alt="Как работает SilkSol Intelligence: данные → ИИ-движок → решения" src="docs/diagrams/how-it-works.ru.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Интерактивная версия (масштаб и перемещение)</summary>
+
 ```mermaid
 flowchart LR
   subgraph D["1 · Данные"]
@@ -335,6 +383,8 @@ flowchart LR
   O --> API
   P --> PASS
 ```
+
+</details>
 
 У каждого числа на экране — источник и метка «СИМУЛЯЦИЯ» / «LIVE», у каждой оценки — факторы, которые её определяют, как того требует Закон РК «Об искусственном интеллекте».
 
@@ -393,6 +443,14 @@ flowchart LR
 
 Пилот на 3 месяца на маршруте **Актау – Баку** с оператором ж/д или порта, в инфраструктуре QazCloud.
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/pilot-plan.ru.light.png">
+  <img alt="План пилота Актау – Баку, 3 месяца" src="docs/diagrams/pilot-plan.ru.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Интерактивная версия (масштаб и перемещение)</summary>
+
 ```mermaid
 gantt
   title Пилот Актау – Баку (3 месяца)
@@ -410,6 +468,8 @@ gantt
   Отчёт и решение о масштабировании              :r3b, after r3a, 10d
 ```
 
+</details>
+
 | KPI                                         | Как измеряется                                                                                 | Цель                                              |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | Точность ETA                                | Ошибка прогноза прибытия против факта, в сравнении с текущим планированием партнёра            | Лучше текущего плана; конкретная цель — на старте |
@@ -421,6 +481,14 @@ gantt
 **Что нужно от партнёра:** ВМ или namespace в QazCloud с SSO; 1–2 года событий простоя (прибытие / убытие по узлам, СМГС / CMR) и журнал закрытий капитана порта; договорные тарифы; одна команда диспетчеров для теневого режима и обратной связи.
 
 ### ☁️ Развёртывание в QazCloud
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/deployment.ru.light.png">
+  <img alt="Развёртывание в QazCloud" src="docs/diagrams/deployment.ru.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Интерактивная версия (масштаб и перемещение)</summary>
 
 ```mermaid
 flowchart TB
@@ -435,6 +503,8 @@ flowchart TB
   end
   app -->|"JSON-журналы доступа"| siem["SIEM заказчика"]
 ```
+
+</details>
 
 - Один контейнер (дашборд + API), без прав root, файловая система только для чтения, health check.
 - Все данные, бэкапы и персональные данные остаются в Казахстане; развёртывание в контуре заказчика.
@@ -465,6 +535,14 @@ flowchart TB
 
 ### 💼 Бизнес-модель
 
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/business-model.ru.light.png">
+  <img alt="Бизнес-модель: кто платит и как" src="docs/diagrams/business-model.ru.dark.png" width="100%">
+</picture>
+
+<details>
+<summary>🔍 Интерактивная версия (масштаб и перемещение)</summary>
+
 ```mermaid
 flowchart LR
   subgraph who["Кто платит"]
@@ -482,6 +560,8 @@ flowchart LR
   ops --> p
   i --> a
 ```
+
+</details>
 
 Цена оправдана деньгами, которые экономит платформа: предотвращённые демередж, простой вагонов и штрафы по SLA — видны по каждому грузу в тенге.
 

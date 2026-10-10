@@ -1,0 +1,15 @@
+flowchart LR
+  subgraph who["Who pays"]
+    f["Forwarders · cargo owners"]
+    ops["Port, terminal & rail operators"]
+    i["Insurers · banks<br/>(analytics only)"]
+  end
+  subgraph how["How"]
+    s["SaaS subscription<br/>dashboard seats"]
+    a["Pay-per-call API<br/>risk & closure scoring,<br/>delay reports"]
+    p["Paid pilot →<br/>enterprise licence<br/>QazCloud / on-prem"]
+  end
+  f --> s
+  f --> a
+  ops --> p
+  i --> a
